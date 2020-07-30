@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  postgres:
+    image: library/postgres:11
+    ports:
+    - '5432:5432'
+    volumes:
+    - ./postgresql/data:/var/lib/postgresql/data
+    environment:
+        POSTGRES_PASSWORD: "admin"
+        POSTGRES_USER: "admin"
+        POSRGRES_DBNAME: "postal"
+    restart: always
+  mongo:
+    image: library/mongo:4.4.0-rc10
+    ports:
+    - '27017:27017'
+    volumes:
+    - ./mongodb/data:/data/db
+    - ./mongodb/config:/data/configdb
+  activemq:
+    image: rmohr/activemq:latest
+    ports:
+    - '8161:8161'
+    - '61616:61616'
