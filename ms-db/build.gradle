@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'org.liquibase.gradle' version '2.0.3'
+}
+
+group ''
+version ''
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'LiquibaseInit'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(group: 'org.liquibase', name: 'liquibase-core', version: '4.0.0')
+    compile(group: 'org.postgresql', name: 'postgresql', version: '42.2.14')
+}
