@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      database: ${APPNAVIGATION_DB_NAME:postal}
+      username: ${APPNAVIGAION_DB_USERNAME:admin}
+      password: ${APPNAVIGATION_DB_PASSWORD:admin}
+      port: ${APPNAVIGATION_DB_PORT:27017}
+      auto-index-creation: ${APPNAVIGATION_AUTO_INDEX_CREATION:true}
+server:
+  port: ${APPNAVIGATION_SERVER_PORT:8082}
+
+api:
+  directions: ${APPNAVIGATION_DIRECTIONS_API:https://api.mapbox.com/directions/v5/mapbox/driving/}
+  geocoding: ${APPNAVIGATION_GEOCODING_API:https://api.mapbox.com/geocoding/v5/mapbox.places/}
+  access_token: ${APPNAVIGATION_API_ACCESS_TOKEN}
+
+
