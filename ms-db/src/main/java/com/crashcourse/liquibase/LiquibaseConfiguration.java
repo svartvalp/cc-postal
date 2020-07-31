@@ -13,6 +13,7 @@ public class LiquibaseConfiguration {
     public SpringLiquibase liquibase(ObjectProvider<DataSource> dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource.getIfAvailable());
+        liquibase.setDefaultSchema("crashcourse");
         liquibase.setChangeLog("classpath:db/db-master-changelog.xml");
         return liquibase;
     }

@@ -1,0 +1,6 @@
+
+
+rootProject.name = 'cc-postal'
+include 'ms-db'
+include 'ms-users'
+include 'ms-navigation'
