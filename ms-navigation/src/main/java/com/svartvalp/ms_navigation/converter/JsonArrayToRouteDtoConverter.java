@@ -9,9 +9,9 @@ public class JsonArrayToRouteDtoConverter extends TypeConverter<JSONArray, Route
     @Override
     protected RouteDto convert(JSONArray source) {
         RouteDto route = new RouteDto();
-        if (source != null) {
-            route.setLongitude(source.size() > 0 ? (Double) source.get(0) : null);
-            route.setLatitude(source.size() > 1 ? (Double) source.get(1) : null);
+        if (source.size() > 1) {
+            route.setLongitude((Double) source.get(0));
+            route.setLatitude((Double) source.get(1));
         }
         return route;
     }
