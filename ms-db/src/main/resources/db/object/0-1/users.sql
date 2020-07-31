@@ -1,9 +1,8 @@
 --liquibase formatted sql
-
 --changeset mtugarev:db/object/0-1/users-1
-create table users
+create table crashcourse.users
 (
-    id int primary key,
+    id bigint primary key,
     first_name varchar(50),
     middle_name varchar(50),
     last_name varchar(50),
@@ -12,12 +11,12 @@ create table users
     password varchar(100)
 );
 
-CREATE SEQUENCE users_seq START 1;
+CREATE SEQUENCE crashcourse.users_seq START 1;
 
-COMMENT ON TABLE users IS 'Таблица с пользователями';
-COMMENT ON COLUMN users.first_name IS 'Имя пользователя';
-COMMENT ON COLUMN users.middle_name IS 'Отчество пользователя';
-COMMENT ON COLUMN users.last_name IS 'Фамилия пользователя';
-COMMENT ON COLUMN users.login IS 'Логин пользователя';
-COMMENT ON COLUMN users.password IS 'Пароль пользователя зашифрованный bcrypt';
-COMMENT ON COLUMN users.passport_number IS 'Номер пасспорта'
+COMMENT ON TABLE crashcourse.users IS 'Таблица с пользователями';
+COMMENT ON COLUMN crashcourse.users.first_name IS 'Имя пользователя';
+COMMENT ON COLUMN crashcourse.users.middle_name IS 'Отчество пользователя';
+COMMENT ON COLUMN crashcourse.users.last_name IS 'Фамилия пользователя';
+COMMENT ON COLUMN crashcourse.users.login IS 'Логин пользователя';
+COMMENT ON COLUMN crashcourse.users.password IS 'Пароль пользователя зашифрованный bcrypt';
+COMMENT ON COLUMN crashcourse.users.passport_number IS 'Номер пасспорта'

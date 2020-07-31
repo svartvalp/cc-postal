@@ -3,25 +3,16 @@ plugins {
     id 'org.liquibase.gradle' version '2.0.3'
 }
 
-group ''
-version ''
-
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
-                'Implementation-Version': version,
-                'Main-Class': 'LiquibaseInit'
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
+group 'com.crashcourse'
+version '1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile(group: 'org.liquibase', name: 'liquibase-core', version: '4.0.0')
-    compile(group: 'org.postgresql', name: 'postgresql', version: '42.2.14')
+    implementation(group: 'org.springframework', name: 'spring-context', version: '4.2.0.RELEASE')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.3.2.RELEASE')
+    implementation(group: 'org.liquibase', name: 'liquibase-core', version: '4.0.0')
+    implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.14')
 }

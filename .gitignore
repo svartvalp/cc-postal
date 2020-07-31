@@ -5,3 +5,4 @@ target
 !/environment/mongodb/.gitkeep
 /environment/postgresql/**
 !/environment/postgresql/.gitkeep
+!/environment/postgresql/init.sql
