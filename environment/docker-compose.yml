@@ -1,26 +1,29 @@
 version: '3.7'
 services:
   postgres:
-    image: library/postgres:11
+    image: postgres:11
     ports:
-    - '5432:5432'
+      - '5432:5432'
     volumes:
-    - ./postgresql/data:/var/lib/postgresql/data
-    - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql/data:/var/lib/postgresql/data
     environment:
-        POSTGRES_PASSWORD: "admin"
-        POSTGRES_USER: "admin"
-        POSRGRES_DBNAME: "postal"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_USER: "admin"
+      POSRGRES_DB: "postal"
     restart: always
   mongo:
     image: library/mongo:4.4.0-rc10
     ports:
-    - '27017:27017'
+      - '27017:27017'
+    environment:
+      MONGODB_USERNAME: "admin"
+      MONGODB_PASSWORD: "admin"
     volumes:
-    - ./mongodb/data:/data/db
-    - ./mongodb/config:/data/configdb
+      - ./mongodb/data:/data/db
+      - ./mongodb/config:/data/configdb
   activemq:
     image: rmohr/activemq:latest
     ports:
-    - '8161:8161'
-    - '61616:61616'
+      - '8161:8161'
+      - '61616:61616'
