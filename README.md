@@ -16,3 +16,4 @@ ms-navigation - Сервис по геокодингу, определению �
 | APPNAVIGATION_DIRECTIONS_API      | нет        |    https://api.mapbox.com/directions/v5/mapbox/driving/ | URL от API для получения пути             |
 | APPNAVIGATION_GEOCODING_API       | нет        |    https://api.mapbox.com/geocoding/v5/mapbox.places/   | URL от API для геокодирования             |
 | APPNAVIGATION_API_ACCESS_TOKEN    | да         |   _                                                     | токен для API                             |
+| APPNAVIGATION_DB_HOST             | нет        |   localhost                                             | хост базы данных                          |

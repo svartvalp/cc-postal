@@ -1,11 +1,8 @@
 spring:
   data:
     mongodb:
-      database: ${APPNAVIGATION_DB_NAME:postal}
-      username: ${APPNAVIGAION_DB_USERNAME:admin}
-      password: ${APPNAVIGATION_DB_PASSWORD:admin}
-      port: ${APPNAVIGATION_DB_PORT:27017}
       auto-index-creation: ${APPNAVIGATION_AUTO_INDEX_CREATION:true}
+      uri: mongodb://${APPNAVIGAION_DB_USERNAME:admin}:${APPNAVIGATION_DB_PASSWORD:admin}@${APPNAVIGATION_DB_HOST:localhost}:${APPNAVIGATION_DB_PORT:27017}/${APPNAVIGATION_DB_NAME:postal}?authSource=postal&authMechanism=SCRAM-SHA-1
 server:
   port: ${APPNAVIGATION_SERVER_PORT:8082}
 

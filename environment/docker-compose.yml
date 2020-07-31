@@ -5,22 +5,26 @@ services:
     ports:
       - '5432:5432'
     volumes:
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgresql/data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: "admin"
       POSTGRES_USER: "admin"
       POSRGRES_DB: "postal"
     restart: always
+
   mongo:
-    image: library/mongo:4.4.0-rc10
+    image: mongo:4.4.0-rc10
     ports:
       - '27017:27017'
     environment:
-      MONGODB_USERNAME: "admin"
-      MONGODB_PASSWORD: "admin"
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: postal
     volumes:
       - ./mongodb/data:/data/db
       - ./mongodb/config:/data/configdb
+
   activemq:
     image: rmohr/activemq:latest
     ports:
