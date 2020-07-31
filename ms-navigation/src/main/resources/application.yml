@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       auto-index-creation: ${APPNAVIGATION_AUTO_INDEX_CREATION:true}
-      uri: mongodb://${APPNAVIGAION_DB_USERNAME:admin}:${APPNAVIGATION_DB_PASSWORD:admin}@${APPNAVIGATION_DB_HOST:localhost}:${APPNAVIGATION_DB_PORT:27017}/${APPNAVIGATION_DB_NAME:postal}?authSource=postal&authMechanism=SCRAM-SHA-1
+      uri: mongodb://${APPNAVIGAION_DB_USERNAME:admin}:${APPNAVIGATION_DB_PASSWORD:admin}@${APPNAVIGATION_DB_HOST:localhost}:${APPNAVIGATION_DB_PORT:27017}/${APPNAVIGATION_DB_NAME:postal}?authSource=${APPNAVIGATION_DB_AUTHSOURCE:admin}&authMechanism=SCRAM-SHA-1
 server:
   port: ${APPNAVIGATION_SERVER_PORT:8082}
 
