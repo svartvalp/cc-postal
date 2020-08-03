@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class Listener {
+public class UserListener {
     private final UserService userService;
 
     @JmsListener(destination = "ms_users", containerFactory = "myFactory")
     @SendTo("ms_departure")
     public UserDto receiveMessage(Integer id) {
         try {
-            return this.userService.getUserById(id);
+            return userService.getUserById(id);
         } catch (NoSuchEntityException var3) {
             return null;
         }

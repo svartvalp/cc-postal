@@ -1,6 +1,7 @@
 package com.crashcourse.controller;
 
 import com.crashcourse.exception.AlreadyExistException;
+import com.crashcourse.exception.BadConvertException;
 import com.crashcourse.exception.CustomErrorResponse;
 import com.crashcourse.exception.NoSuchEntityException;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,11 @@ public class ExceptionAdvice {
     @ExceptionHandler({AlreadyExistException.class})
     public ResponseEntity<CustomErrorResponse> handleAlreadyExists(AlreadyExistException e) {
         CustomErrorResponse error = new CustomErrorResponse("ALREADY_EXIST", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({BadConvertException.class})
+    public ResponseEntity<CustomErrorResponse> handleBadConvert(BadConvertException e) {
+        CustomErrorResponse error = new CustomErrorResponse("BAD_CONVERT", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
