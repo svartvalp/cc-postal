@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     private UserDto getUserById(@PathVariable Integer id) throws Exception {
         return this.userService.getUserById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/{id}")
     private UserDto deleteUser(@PathVariable Integer id) throws Exception {
         return this.userService.deleteUserById(id);
     }
