@@ -63,3 +63,8 @@
         },
     }
 </script>
+<style>
+    #inspire {
+        width: 100%;
+    }
+</style>
