@@ -1,4 +1,4 @@
-package com.crashcourse.liquibase;
+package com.crash;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.ObjectProvider;
@@ -17,5 +17,9 @@ public class LiquibaseConfiguration {
         liquibase.setLiquibaseSchema("postal_schema");
         liquibase.setChangeLog("classpath:db/db-master-changelog.xml");
         return liquibase;
+    }
+
+    public static void main(String[] args){
+
     }
 }
