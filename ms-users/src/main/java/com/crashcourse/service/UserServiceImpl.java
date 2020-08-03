@@ -7,6 +7,7 @@ import com.crashcourse.dto.UserDto;
 import com.crashcourse.exception.AlreadyExistException;
 import com.crashcourse.exception.NoSuchEntityException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final ConversionService conversionService;
     private final UserRepository userRepository;
@@ -37,7 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public UserDto registerUser(UserDto userDto) throws AlreadyExistException {
-        userRepository.findByLogin(userDto.getLogin()).orElseThrow(AlreadyExistException::new);
+        if(userRepository.findByLogin(userDto.getLogin()).isPresent()) {
+            throw new AlreadyExistException();
+        }
         UserEntity userEntity = conversionService.convert(userDto, UserEntity.class);
         userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
         return conversionService.convert(userRepository.save(userEntity), UserDto.class);
