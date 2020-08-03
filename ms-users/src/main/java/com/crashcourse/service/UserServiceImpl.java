@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> login(UserDto userDto) {
         Optional<UserEntity> userEntity = userRepository.findByLogin(userDto.getLogin());
         if (userEntity.isPresent() && BCrypt.checkpw(userDto.getPassword(), userEntity.get().getPassword())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
