@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import DepartureCreationPage from "@/components/DepartureCreationPage";
+
 
 Vue.use(Router)
 
@@ -9,6 +11,10 @@ export default new Router({
         {
             path: '/login',
             component: () => import('./components/Login')
+        },
+        {
+            path: '/departure/create',
+            component : DepartureCreationPage
         }
     ]
 })

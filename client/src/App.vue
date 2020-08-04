@@ -9,7 +9,7 @@
             <NavigationBar
                     :drawerState="drawerState"
             />
-            <MainPanel />
+            <MainPanel :user="user" />
             <Footer/>
         </v-app>
     </div>
@@ -37,7 +37,23 @@
         data() {
             return {
                 drawerState: false,
-                user: {}
+              //TODO create loading user data from back end
+              // mock user data
+                user: {
+                  id : 1,
+                  addresses : [{
+                    id : 1,
+                    longitude : 12,
+                    latitude : 13,
+                    name : 'Russia, Moscow, Москва, округ Тимирязевский, 127206, Ул. Астрадамская 3'
+                  },
+                    {
+                      id : 2,
+                      longitude : 13,
+                      latitude : 14,
+                      name : 'bbbb'
+                    }]
+                }
             }
         },
         methods: {
