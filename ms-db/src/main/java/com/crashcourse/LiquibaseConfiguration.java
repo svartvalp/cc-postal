@@ -1,4 +1,4 @@
-package com.crashcourse.liquibase;
+package com.crashcourse;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.ObjectProvider;
@@ -13,7 +13,8 @@ public class LiquibaseConfiguration {
     public SpringLiquibase liquibase(ObjectProvider<DataSource> dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource.getIfAvailable());
-        liquibase.setDefaultSchema("crashcourse");
+        liquibase.setDefaultSchema("postal_schema");
+        liquibase.setLiquibaseSchema("postal_schema");
         liquibase.setChangeLog("classpath:db/db-master-changelog.xml");
         return liquibase;
     }

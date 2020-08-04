@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${APPUSERS_DB_HOST:localhost}:${APPUSERS_DB_PORT:5432}/${APPUSERS_DB_NAME:admin}
+    username: ${APPUSERS_DB_USERNAME:admin}
+    password: ${APPUSERS_DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: ${APPUSERS_DB_SCHEMA_NAME:postal_schema}
+  jpa:
+    hibernate:
+      ddl-auto: none
+server:
+  port: ${APPUSERS_SERVER_PORT:8081}
+project:
+  logging:
+    enabled: ${APPUSERS_LOGGING_REQUESTS:false}

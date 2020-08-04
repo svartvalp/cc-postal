@@ -1,1 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS crashcourse;
+CREATE SCHEMA IF NOT EXISTS postal_schema;
