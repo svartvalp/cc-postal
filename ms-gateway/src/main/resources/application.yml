@@ -1,0 +1,41 @@
+zuul:
+  routes:
+    login:
+      path: /login/**
+      url: ${service.users.url}
+      stripPrefix: false
+    user:
+      path: /user/**
+      url: ${service.users.url}
+      stripPrefix: false
+    register:
+      path: /register/**
+      url: ${service.users.url}
+      stripPrefix: false
+    direction:
+      path: /direction/**
+      url: ${service.navigation.url}
+      stripPrefix: false
+    geocoding:
+      path: /geocoding/**
+      url: ${service.navigation.url}
+      stripPrefix: false
+    departures:
+      path: /departures/**
+      url: ${service.departure.url}
+      stripPrefix: false
+    departure:
+      path: /departure/**
+      url: ${service.departure.url}
+      stripPrefix: false
+
+service:
+  users:
+    url: http://localhost:8081/
+  navigation:
+    url: http://localhost:8082/
+  departure:
+    url: http://localhost:8083/
+
+server:
+  port: 8080
