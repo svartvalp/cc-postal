@@ -18,8 +18,8 @@ public class MessageService {
     public String getMessage(String msg) {
         try {
             return messageSource.getMessage(msg, null, loc);
-        } catch(NoSuchMessageException e) {
-            log.debug(e.getMessage());
+        } catch (NoSuchMessageException e) {
+            log.error(e.getMessage());
             return "";
         }
     }

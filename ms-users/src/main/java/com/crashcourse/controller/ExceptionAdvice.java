@@ -17,38 +17,40 @@ public class ExceptionAdvice {
     @ExceptionHandler({NoSuchEntityException.class})
     public ResponseEntity<CustomErrorResponse> handleGenericNotFoundException(NoSuchEntityException e) {
         CustomErrorResponse error = new CustomErrorResponse(
-                messageService.getMessage("no.such.entity.code"),
-                messageService.getMessage(e.getMessage()));
+                messageService.getMessage("no.such.entity.code"), e.getMessage()
+        );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<CustomErrorResponse> handleAllOtherExceptions(Exception e) {
         CustomErrorResponse error = new CustomErrorResponse(
-                messageService.getMessage("internal.error.code"),
-                messageService.getMessage(e.getMessage()));
+                messageService.getMessage("internal.error.code"), e.getMessage()
+        );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({AlreadyExistException.class})
     public ResponseEntity<CustomErrorResponse> handleAlreadyExists(AlreadyExistException e) {
         CustomErrorResponse error = new CustomErrorResponse(
-                messageService.getMessage("already.exists.code"),
-                messageService.getMessage(e.getMessage()));
+                messageService.getMessage("already.exists.code"), e.getMessage()
+        );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler({BadConvertException.class})
     public ResponseEntity<CustomErrorResponse> handleBadConvert(BadConvertException e) {
         CustomErrorResponse error = new CustomErrorResponse(
-                messageService.getMessage("bad.convert.code"),
-                messageService.getMessage(e.getMessage()));
+                messageService.getMessage("bad.convert.code"), e.getMessage()
+        );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<CustomErrorResponse> handleBadRequest(BadRequestException e) {
         CustomErrorResponse error = new CustomErrorResponse(
-                messageService.getMessage("bad.request.code"),
-                messageService.getMessage(e.getMessage()));
+                messageService.getMessage("bad.request.code"), e.getMessage()
+        );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
