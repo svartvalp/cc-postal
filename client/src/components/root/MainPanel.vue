@@ -9,3 +9,10 @@
         </v-container>
     </v-main>
 </template>
+<script>
+export default {
+  props : {
+    user : Object
+  }
+}
+</script>

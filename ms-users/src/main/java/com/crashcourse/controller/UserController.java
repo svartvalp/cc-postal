@@ -3,9 +3,11 @@ package com.crashcourse.controller;
 import com.crashcourse.dto.UserDto;
 import com.crashcourse.exception.AlreadyExistException;
 import com.crashcourse.exception.BadConvertException;
+import com.crashcourse.exception.BadRequestException;
 import com.crashcourse.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,17 +27,17 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    private UserDto registerUser(@RequestBody UserDto userDto) throws AlreadyExistException, BadConvertException {
+    private UserDto registerUser(@Validated @RequestBody UserDto userDto) throws AlreadyExistException, BadConvertException, BadRequestException {
         return userService.registerUser(userDto);
     }
 
     @PutMapping("/user")
-    private UserDto updateUser(@RequestBody UserDto userDto) throws Exception {
+    private UserDto updateUser(@Validated @RequestBody UserDto userDto) throws Exception {
         return userService.updateUser(userDto);
     }
 
     @PostMapping("/login")
-    private ResponseEntity<?> loginUser(@RequestBody UserDto userDto) {
-        return userService.login(userDto);
+    private ResponseEntity<?> loginUser(@Validated @RequestBody UserDto userDto) {
+        return userService.authorization(userDto);
     }
 }

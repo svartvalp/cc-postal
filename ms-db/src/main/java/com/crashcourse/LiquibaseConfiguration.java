@@ -1,4 +1,4 @@
-package com.crashcourse.liquibase;
+package com.crashcourse;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.ObjectProvider;

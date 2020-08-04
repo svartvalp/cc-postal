@@ -1,7 +1,10 @@
 package com.crashcourse.exception;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class NoSuchEntityException extends Exception {
-    public String getMessage() {
-        return "No such entity in database";
+    public NoSuchEntityException(String msg) {
+        super(msg);
     }
 }
