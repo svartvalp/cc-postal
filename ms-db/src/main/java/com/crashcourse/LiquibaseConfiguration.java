@@ -18,8 +18,4 @@ public class LiquibaseConfiguration {
         liquibase.setChangeLog("classpath:db/db-master-changelog.xml");
         return liquibase;
     }
-
-    public static void main(String[] args){
-
-    }
 }

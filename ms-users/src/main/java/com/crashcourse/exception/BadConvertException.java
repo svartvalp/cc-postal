@@ -1,8 +1,11 @@
 package com.crashcourse.exception;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class BadConvertException extends Exception {
-    @Override
-    public String getMessage() {
-        return "An error has occurred while converting";
+    public BadConvertException(String msg) {
+        super(msg);
     }
+
 }
