@@ -5,7 +5,7 @@
                 dark
         >
             <v-app-bar-nav-icon v-on:click=clickHandling color="black"></v-app-bar-nav-icon>
-            <v-toolbar-title class="black--text">cc-postal</v-toolbar-title>
+            <v-toolbar-title class="black--text">ПочтаЛён</v-toolbar-title>
 
         </v-app-bar>
 </template>
@@ -20,3 +20,8 @@
         }
     }
 </script>
+<style>
+.black--text {
+  font-size: 16pt;
+}
+</style>
