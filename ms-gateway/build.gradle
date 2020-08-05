@@ -19,17 +19,14 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
-
-// https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner
-    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.6.2'
+// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-resource-server
+    compile group: 'org.springframework.security', name: 'spring-security-oauth2-resource-server', version: '5.3.3.RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.auth0:java-jwt:3.10.3'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
     compileOnly 'org.projectlombok:lombok'
-    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-zuul
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-zuul', version: '2.2.3.RELEASE'
 
     annotationProcessor 'org.projectlombok:lombok'
@@ -37,6 +34,8 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.6.2'
 }
 test {
     useJUnitPlatform()
