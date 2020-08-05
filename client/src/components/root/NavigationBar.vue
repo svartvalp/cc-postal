@@ -18,7 +18,7 @@
                     <v-icon>mdi-email</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Departures</v-list-item-title>
+                    <v-list-item-title @click="$router.push('/departures')">Departures</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link>
