@@ -10,5 +10,14 @@ api:
   directions: ${APPNAVIGATION_DIRECTIONS_API:https://api.mapbox.com/directions/v5/mapbox/driving/}
   geocoding: ${APPNAVIGATION_GEOCODING_API:https://api.mapbox.com/geocoding/v5/mapbox.places/}
   access_token: ${APPNAVIGATION_API_ACCESS_TOKEN}
-
-
+kafka:
+  bootstrap:
+    server: ${APPNAVIGATION_KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+  topic:
+    departure:
+      compute: ${KAFKA_DEPARTURE_COMPUTE_TOPIC:departure_duration_compute}
+      result: ${KAFKA_DEPARTURE_RESULT_TOPIC:departure_duration_result}
+    user-list:
+      request: ${KAFKA_USER_LIST_REQUEST_TOPIC:user-list_request}
+      result: ${KAFKA_USER_LIST_RESULT_TOPIC:user-list_result}
+  group_id: ${APPNAVIGATION_KAFKA_GROUP_ID:ms-navigaion}
