@@ -1,7 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postal
-    username: admin
-    password: admin
+    url: jdbc:postgresql://${APPDEPARTURE_DB_HOST:localhost}:${APPDEPARTURE_DB_PORT:5432}/${APPDEPARTURE_DB_NAME:postal}
+    username: ${APPDEPARTURE_DB_USERNAME:admin}
+    password: ${APPDEPARTURE_DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: ${APPDEPARTURE_DB_SCHEMA_NAME:postal_schema}
   jpa:
     generate-ddl: true
+server:
+  port: ${APPDEPARTURE_SERVER_PORT:8083}

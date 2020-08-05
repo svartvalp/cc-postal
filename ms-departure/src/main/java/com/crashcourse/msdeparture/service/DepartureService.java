@@ -1,12 +1,15 @@
-package ru.pkozlov.msdeparture.service;
+package com.crashcourse.msdeparture.service;
 
-import ru.pkozlov.msdeparture.dto.DepartureDto;
+import com.crashcourse.msdeparture.dto.DepartureDto;
 
-import java.util.Set;
+import java.util.List;
 
 public interface DepartureService {
     DepartureDto createDeparture(DepartureDto departureDto);
-    Set<DepartureDto> getAllDepartures();
+
+    List<DepartureDto> getAllDepartures();
+
     DepartureDto getDepartureById(Long id);
+
     void deleteDeparture(Long id);
 }

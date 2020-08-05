@@ -1,4 +1,4 @@
-package ru.pkozlov.msdeparture.entity;
+package com.crashcourse.msdeparture.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,20 +18,25 @@ public class Departure {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departure_generator")
     @SequenceGenerator(name = "departure_generator", schema = "postal_schema", sequenceName = "departure_seq", allocationSize = 1)
-    @Column(name = "PK_id")
-    private Long PK_id;
+    @Column(name = "id")
+    private Long id;
     @Column(name = "user_id")
-    private Long user_id;
-    @Column(name = "departure_point_id")
-    private Long departure_point_id;
-    @Column(name = "arriving_point_id")
-    private Long arriving_point_id;
+    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "departure_point_id")
+    private Address departurePoint;
+    @ManyToOne
+    @JoinColumn(name = "arriving_point_id")
+    private Address arrivingPoint;
     @Column(name = "type")
     private String type;
     @Column(name = "departure_date")
-    private LocalDateTime departure_date;
+    private LocalDateTime departureDate;
     @Column(name = "arrived")
     private Boolean arrived;
-
+    @Column(name = "weight")
+    private Integer weight;
+    @Column(name = "description")
+    private String description;
 
 }

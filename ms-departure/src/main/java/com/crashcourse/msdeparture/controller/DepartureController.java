@@ -1,11 +1,12 @@
-package ru.pkozlov.msdeparture.controller;
+package com.crashcourse.msdeparture.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.pkozlov.msdeparture.dto.DepartureDto;
-import ru.pkozlov.msdeparture.service.DepartureService;
+import com.crashcourse.msdeparture.dto.DepartureDto;
+import com.crashcourse.msdeparture.service.DepartureService;
 
-import java.util.Set;
+import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -13,8 +14,8 @@ public class DepartureController {
 
     private final DepartureService departureService;
 
-    @GetMapping("/departures")
-    public Set<DepartureDto> getAllDepartures() {
+    @GetMapping("/departure/list")
+    public List<DepartureDto> getAllDepartures() {
         return departureService.getAllDepartures();
     }
 
@@ -24,7 +25,7 @@ public class DepartureController {
     }
 
     @PostMapping("/departure")
-    public DepartureDto createDeparture(@RequestBody DepartureDto departureDto) {
+    public DepartureDto createDeparture(@RequestBody @Valid DepartureDto departureDto) {
         return departureService.createDeparture(departureDto);
     }
 
