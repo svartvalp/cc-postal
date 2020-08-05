@@ -1,5 +1,6 @@
 package com.crashcourse.msdeparture.service;
 
+import com.crashcourse.msdeparture.dto.AddressDto;
 import com.crashcourse.msdeparture.dto.DepartureDto;
 import com.crashcourse.msdeparture.entity.Address;
 import com.crashcourse.msdeparture.entity.Departure;
@@ -36,32 +37,46 @@ public class DepartureServiceImpl implements DepartureService {
         departure.setId(departureDto.getId());
         departure.setUserId(departureDto.getUserId());
 
-        Double departureLongitude = departureDto.getDeparturePoint().getLongitude();
-        Double departureLatitude = departureDto.getDeparturePoint().getLatitude();
+        AddressDto departurePoint = departureDto.getDeparturePoint();
+        Double departureLongitude = departurePoint.getLongitude();
+        Double departureLatitude = departurePoint.getLatitude();
 
-        Optional<Address> departureAddressOptional = addressRepository.findByLongitudeAndLatitude(departureLongitude, departureLatitude);
+        Optional<Address> departureAddressOptional;
+        if (departurePoint.getId() != null) {
+            departureAddressOptional = addressRepository.findById(departurePoint.getId());
+        } else {
+            departureAddressOptional = addressRepository.findByLongitudeAndLatitude(departureLongitude, departureLatitude);
+        }
+
         if (departureAddressOptional.isPresent()) {
             departure.setDeparturePoint(departureAddressOptional.get());
         } else {
             Address newAddress = new Address();
             newAddress.setLongitude(departureLongitude);
             newAddress.setLatitude(departureLatitude);
-            newAddress.setAddress(departureDto.getDeparturePoint().getAddress());
+            newAddress.setAddress(departurePoint.getAddress());
             addressRepository.save(newAddress);
             departure.setDeparturePoint(newAddress);
         }
 
-        Double arrivingLongitude = departureDto.getArrivingPoint().getLongitude();
-        Double arrivingLatitude = departureDto.getArrivingPoint().getLatitude();
+        AddressDto arrivingPoint = departureDto.getArrivingPoint();
+        Double arrivingLongitude = arrivingPoint.getLongitude();
+        Double arrivingLatitude = arrivingPoint.getLatitude();
 
-        Optional<Address> arrivingAddressOptional = addressRepository.findByLongitudeAndLatitude(arrivingLongitude, arrivingLatitude);
+        Optional<Address> arrivingAddressOptional;
+        if (arrivingPoint.getId() != null) {
+            arrivingAddressOptional = addressRepository.findById(arrivingPoint.getId());
+        } else {
+            arrivingAddressOptional = addressRepository.findByLongitudeAndLatitude(arrivingLongitude, arrivingLatitude);
+        }
+
         if (arrivingAddressOptional.isPresent()) {
             departure.setArrivingPoint(arrivingAddressOptional.get());
         } else {
             Address newAddress = new Address();
             newAddress.setLongitude(arrivingLongitude);
             newAddress.setLatitude(arrivingLatitude);
-            newAddress.setAddress(departureDto.getArrivingPoint().getAddress());
+            newAddress.setAddress(arrivingPoint.getAddress());
             addressRepository.save(newAddress);
             departure.setArrivingPoint(newAddress);
         }
@@ -83,8 +98,8 @@ public class DepartureServiceImpl implements DepartureService {
     public List<DepartureDto> getAllDepartures() {
         List<DepartureDto> departureDtoList =
                 StreamSupport.stream(departureRepository.findAll().spliterator(), false)
-                .map(m -> modelMapper.map(m, DepartureDto.class))
-                .collect(Collectors.toList());
+                        .map(m -> modelMapper.map(m, DepartureDto.class))
+                        .collect(Collectors.toList());
 
         log.info("Found {} departures", departureDtoList.size());
         return departureDtoList;
