@@ -96,7 +96,7 @@ public class DepartureServiceImpl implements DepartureService {
         Optional<Departure> departureOptional = departureRepository.findById(id);
         if (departureOptional.isEmpty()) {
             log.error("Departure with id = {} not found!", id);
-            throw new DepartureNotFoundException(String.format(messageService.getMessage("no.such.departure.message"), id));
+            throw new DepartureNotFoundException(messageService.getMessage("no.such.departure.message", id));
         }
         Departure departure = departureOptional.get();
         log.info("Found departure with id = {}", id);
@@ -113,7 +113,7 @@ public class DepartureServiceImpl implements DepartureService {
             log.info("Removed departure with id = {}", id);
         } else {
             log.error("Departure with id = {} not found!", id);
-            throw new DepartureNotFoundException(String.format(messageService.getMessage("no.such.departure.message"), id));
+            throw new DepartureNotFoundException(messageService.getMessage("no.such.departure.message", id));
         }
     }
 }
