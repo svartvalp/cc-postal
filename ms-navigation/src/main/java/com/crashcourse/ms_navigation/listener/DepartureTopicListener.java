@@ -17,7 +17,7 @@ public class DepartureTopicListener {
 
     @KafkaListener(topics = "${kafka.topic.departure.compute}", groupId = "${kafka.group_id}")
     public void receiveDepartureDtoMessage(DepartureDto departureDto) {
-       log.debug("Received departure dto: {}. Sending it for counting date", departureDto);
+        log.debug("Received departure dto: {}. Sending it for counting date", departureDto);
         departureService.countArrivingDateAndSend(departureDto);
     }
 
