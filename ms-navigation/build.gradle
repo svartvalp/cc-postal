@@ -31,7 +31,7 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
     compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
-
+    compile 'org.springframework.kafka:spring-kafka'
 }
 
 test {
