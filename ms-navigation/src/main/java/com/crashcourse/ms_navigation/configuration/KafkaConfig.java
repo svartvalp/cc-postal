@@ -72,22 +72,23 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, DepartureDto> producerFactory() {
+    public ProducerFactory<String, DepartureDto> departureDtoProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig(), new StringSerializer(), new JsonSerializer<>());
     }
 
     @Bean
-    public KafkaTemplate<String, DepartureDto> kafkaTemplate(ProducerFactory<String, DepartureDto> producerFactory) {
+    public KafkaTemplate<String, DepartureDto> departureDtoKafkaTemplate(ProducerFactory<String, DepartureDto> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
-    public ConsumerFactory<String, DepartureDto> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(DepartureDto.class));
+    public ConsumerFactory<String, DepartureDto> departureDtoConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(),
+                new JsonDeserializer<>(DepartureDto.class).trustedPackages("*"));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DepartureDto> kafkaListenerContainerFactory(ConsumerFactory<String, DepartureDto> consumerFactory) {
+    public ConcurrentKafkaListenerContainerFactory<String, DepartureDto> departureDtoKafkaListenerContainerFactory(ConsumerFactory<String, DepartureDto> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, DepartureDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
@@ -105,11 +106,12 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, UserListDto> userListDtoConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(UserListDto.class));
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(),
+                new JsonDeserializer<>(UserListDto.class).trustedPackages("*"));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserListDto> userListDtoConcurrentKafkaListenerContainerFactory(ConsumerFactory<String, UserListDto> consumerFactory) {
+    public ConcurrentKafkaListenerContainerFactory<String, UserListDto> userListDtoListenerContainerFactory(ConsumerFactory<String, UserListDto> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, UserListDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
@@ -127,7 +129,6 @@ public class KafkaConfig {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerUrl);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        config.put(JsonDeserializer.TRUSTED_PACKAGES, "com.crashcourse.ms_navigation.dto");
         return config;
     }
 

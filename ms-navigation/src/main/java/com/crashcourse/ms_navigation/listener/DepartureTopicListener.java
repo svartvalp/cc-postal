@@ -15,13 +15,13 @@ public class DepartureTopicListener {
 
     private final DepartureService departureService;
 
-    @KafkaListener(topics = "${kafka.topic.departure.compute}", groupId = "${kafka.group_id}")
+    @KafkaListener(topics = "${kafka.topic.departure.compute}", groupId = "${kafka.group_id}", containerFactory = "departureDtoKafkaListenerContainerFactory")
     public void receiveDepartureDtoMessage(DepartureDto departureDto) {
         log.debug("Received departure dto: {}. Sending it for counting date", departureDto);
         departureService.countArrivingDateAndSend(departureDto);
     }
 
-    @KafkaListener(topics = "${kafka.topic.user-list.result}", groupId = "${kafka.group_id}")
+    @KafkaListener(topics = "${kafka.topic.user-list.result}", groupId = "${kafka.group_id}", containerFactory = "userListDtoListenerContainerFactory")
     public void receiveAllUsersDtoMessage(UserListDto userListDto) {
         log.debug("Received user list with departure id : {}", userListDto.getDepartureId());
         departureService.findNearestUserFromUsersAndSend(userListDto);
