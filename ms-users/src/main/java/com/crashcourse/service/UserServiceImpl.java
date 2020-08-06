@@ -58,13 +58,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public ResponseEntity<UserDto> authorization(UserDto userDto) {
+    public ResponseEntity<?> authorization(UserDto userDto) {
         if (userDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<UserEntity> userEntity = userRepository.findByLogin(userDto.getLogin());
         if (userEntity.isPresent() && BCrypt.checkpw(userDto.getPassword(), userEntity.get().getPassword())) {
-            return new ResponseEntity<>(conversionService.convert(userEntity, UserDto.class), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -87,5 +87,14 @@ public class UserServiceImpl implements UserService {
             }
             return conversionService.convert(userRepository.save(toSafe), UserDto.class);
         }
+    }
+    @Transactional
+    public UserDto getCurrentUser(String login) throws NoSuchEntityException {
+        Optional<UserEntity> userEntity = userRepository.findByLogin(login);
+        return conversionService.convert(
+                userEntity.orElseThrow(() -> new NoSuchEntityException("no.such.entity.msg")),
+                UserDto.class
+        );
+
     }
 }
