@@ -8,5 +8,5 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String middleName;
-    private AddressDto userAddress;
+    private AddressDto address;
 }

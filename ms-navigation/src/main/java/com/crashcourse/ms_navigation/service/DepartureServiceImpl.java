@@ -79,21 +79,23 @@ public class DepartureServiceImpl implements DepartureService {
                 TreeMap<Double, UserDto> usersMap = new TreeMap<>();
                 userListDto.getUsers().forEach(user -> {
                     if (!user.getId().equals(departure.get().getUserId())) {
-                        usersMap.put(Math.sqrt(Math.pow(user.getUserAddress().getLongitude() - longitude, 2)
-                                + Math.pow(user.getUserAddress().getLatitude() - latitude, 2)), user);
+                        usersMap.put(Math.sqrt(Math.pow(user.getAddress().getLongitude() - longitude, 2)
+                                + Math.pow(user.getAddress().getLatitude() - latitude, 2)), user);
                     }
                 });
-                UserDto nearestUser = usersMap.firstEntry().getValue();
-                log.debug("Nearest user's coordinates are ({},{})",
-                        nearestUser.getUserAddress().getLongitude(),
-                        nearestUser.getUserAddress().getLatitude());
-                departureDto.setAddressee(nearestUser);
-                departureDao.deleteById(departure.get().getGUID());
-                log.info("Nearest user with id {} and coordinates ({},{}) was found for departure id {}",
-                        nearestUser.getId(),
-                        nearestUser.getUserAddress().getLongitude(),
-                        nearestUser.getUserAddress().getLatitude(),
-                        departure.get().getDepartureId());
+                if(usersMap.firstEntry() != null) {
+                    UserDto nearestUser = usersMap.firstEntry().getValue();
+                    log.debug("Nearest user's coordinates are ({},{})",
+                            nearestUser.getAddress().getLongitude(),
+                            nearestUser.getAddress().getLatitude());
+                    departureDto.setAddressee(nearestUser);
+                    departureDao.deleteById(departure.get().getGUID());
+                    log.info("Nearest user with id {} and coordinates ({},{}) was found for departure id {}",
+                            nearestUser.getId(),
+                            nearestUser.getAddress().getLongitude(),
+                            nearestUser.getAddress().getLatitude(),
+                            departure.get().getDepartureId());
+                }
                 departureMessageSender.sendToTopic(departureDto, departureResult);
             } else {
                 log.warn("Departure in database was not found");

@@ -84,7 +84,7 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, DepartureDto> departureDtoConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(),
-                new JsonDeserializer<>(DepartureDto.class).trustedPackages("*"));
+                new JsonDeserializer<>(DepartureDto.class).trustedPackages("*").ignoreTypeHeaders());
     }
 
     @Bean
@@ -107,7 +107,7 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, UserListDto> userListDtoConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(),
-                new JsonDeserializer<>(UserListDto.class).trustedPackages("*"));
+                new JsonDeserializer<>(UserListDto.class).trustedPackages("*").ignoreTypeHeaders());
     }
 
     @Bean
