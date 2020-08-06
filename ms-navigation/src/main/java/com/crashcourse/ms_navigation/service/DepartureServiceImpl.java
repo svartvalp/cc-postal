@@ -83,7 +83,7 @@ public class DepartureServiceImpl implements DepartureService {
                                 + Math.pow(user.getAddress().getLatitude() - latitude, 2)), user);
                     }
                 });
-                if(usersMap.firstEntry() != null) {
+                if (usersMap.firstEntry() != null) {
                     UserDto nearestUser = usersMap.firstEntry().getValue();
                     log.debug("Nearest user's coordinates are ({},{})",
                             nearestUser.getAddress().getLongitude(),
