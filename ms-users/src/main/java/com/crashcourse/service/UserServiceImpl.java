@@ -58,13 +58,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> authorization(UserDto userDto) {
+    public ResponseEntity<UserDto> authorization(UserDto userDto) {
         if (userDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<UserEntity> userEntity = userRepository.findByLogin(userDto.getLogin());
         if (userEntity.isPresent() && BCrypt.checkpw(userDto.getPassword(), userEntity.get().getPassword())) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(conversionService.convert(userEntity, UserDto.class), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

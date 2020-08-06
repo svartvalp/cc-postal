@@ -14,7 +14,7 @@ public interface UserService {
 
     UserDto registerUser(UserDto userDto) throws AlreadyExistException, BadConvertException, BadRequestException;
 
-    ResponseEntity<?> authorization(UserDto userDto);
+    ResponseEntity<UserDto> authorization(UserDto userDto);
 
     UserDto updateUser(UserDto userDto) throws Exception;
 }
