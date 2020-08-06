@@ -16,7 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,5 +89,13 @@ public class UserServiceImpl implements UserService {
             }
             return conversionService.convert(userRepository.save(toSafe), UserDto.class);
         }
+    }
+
+    @Transactional
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userEntity -> conversionService.convert(userEntity, UserDto.class))
+                .collect(Collectors.toList());
     }
 }

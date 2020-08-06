@@ -14,3 +14,10 @@ server:
 project:
   logging:
     enabled: ${APPUSERS_LOGGING_REQUESTS:false}
+kafka:
+  server: localhost:9092
+  topic:
+    user-list:
+      request: user_list_request
+      response: user_list_result
+  group_id: ms-navigation

@@ -7,6 +7,8 @@ import com.crashcourse.exception.BadRequestException;
 import com.crashcourse.exception.NoSuchEntityException;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface UserService {
     UserDto getUserById(Integer id) throws NoSuchEntityException;
 
@@ -17,4 +19,6 @@ public interface UserService {
     ResponseEntity<?> authorization(UserDto userDto);
 
     UserDto updateUser(UserDto userDto) throws Exception;
+
+    List<UserDto> getAllUsers();
 }
