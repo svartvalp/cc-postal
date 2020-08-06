@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.Properties;
 
 @EnableMongoRepositories(basePackages = "com.crashcourse.ms_navigation.dao")
 @Configuration
-@EnableScheduling
 public class AppConfig {
     @Bean
     public RestTemplate restTemplate() {

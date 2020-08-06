@@ -12,5 +12,5 @@ public class DepartureDto {
     private AddressDto arrivingPoint;
     private LocalDateTime departureDate;
     private LocalDateTime arrivingDate;
-    private UserDto nearestUser;
+    private UserDto addressee;
 }

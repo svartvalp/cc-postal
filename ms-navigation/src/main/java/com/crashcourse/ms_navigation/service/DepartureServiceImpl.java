@@ -45,12 +45,12 @@ public class DepartureServiceImpl implements DepartureService {
                             departureDto.getArrivingPoint().getLongitude(),
                             departureDto.getArrivingPoint().getLatitude());
             LocalDateTime arrivingDate = null;
-            if(trackTime != null) {
-                arrivingDate =  departureDate.plusSeconds(trackTime);
+            if (trackTime != null) {
+                arrivingDate = departureDate.plusSeconds(trackTime);
             }
             log.debug("Arriving date for dto is {}", arrivingDate);
             departureDto.setArrivingDate(arrivingDate);
-             var savedDeparture = saveDeparture(departureDto);
+            var savedDeparture = saveDeparture(departureDto);
             UserListDto userListDto = new UserListDto();
             userListDto.setDepartureId(savedDeparture.getGUID());
             log.debug("Sending userList with departure id : {}", userListDto.getDepartureId());
@@ -78,16 +78,16 @@ public class DepartureServiceImpl implements DepartureService {
                 DepartureDto departureDto = modelMapper.map(departure.get(), DepartureDto.class);
                 TreeMap<Double, UserDto> usersMap = new TreeMap<>();
                 userListDto.getUsers().forEach(user -> {
-                    if(user.getId() != departure.get().getUserId()) {
+                    if (!user.getId().equals(departure.get().getUserId())) {
                         usersMap.put(Math.sqrt(Math.pow(user.getUserAddress().getLongitude() - longitude, 2)
                                 + Math.pow(user.getUserAddress().getLatitude() - latitude, 2)), user);
                     }
                 });
                 UserDto nearestUser = usersMap.firstEntry().getValue();
-                log.debug("Nearest user\'s coordinates are ({},{})",
+                log.debug("Nearest user's coordinates are ({},{})",
                         nearestUser.getUserAddress().getLongitude(),
                         nearestUser.getUserAddress().getLatitude());
-                departureDto.setNearestUser(nearestUser);
+                departureDto.setAddressee(nearestUser);
                 departureDao.deleteById(departure.get().getGUID());
                 log.info("Nearest user with id {} and coordinates ({},{}) was found for departure id {}",
                         nearestUser.getId(),

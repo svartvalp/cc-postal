@@ -3,7 +3,6 @@ package com.crashcourse.ms_navigation.converter;
 import com.crashcourse.ms_navigation.dto.AddressDto;
 import com.crashcourse.ms_navigation.dto.DepartureDto;
 import com.crashcourse.ms_navigation.entity.Departure;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Component;
 
 @Component
