@@ -1,0 +1,30 @@
+zuul:
+  routes:
+    login:
+      path: /login/**
+      url: ${APPGATEWAY_USERS_SERVICE_URL:http://localhost:8081/}
+      stripPrefix: false
+    user:
+      path: /user/**
+      url: ${APPGATEWAY_USERS_SERVICE_URL:http://localhost:8081/}
+      stripPrefix: false
+    register:
+      path: /register/**
+      url: ${APPGATEWAY_USERS_SERVICE_URL:http://localhost:8081/}
+      stripPrefix: false
+    direction:
+      path: /direction/**
+      url: ${APPGATEWAY_NAVIGATION_SERVICE_URL:http://localhost:8082/}
+      stripPrefix: false
+    geocoding:
+      path: /geocoding/**
+      url: ${APPGATEWAY_NAVIGATION_SERVICE_URL:http://localhost:8082/}
+      stripPrefix: false
+    departure:
+      path: /departure/**
+      url: ${APPGATEWAY_DEPARTURE_SERVICE_URL:http://localhost:8082/}
+      stripPrefix: false
+
+server:
+  port: 8080
+  jwt.secret.key: ${APPGATEWAY_JWT_SECRET_KEY:secret123}
