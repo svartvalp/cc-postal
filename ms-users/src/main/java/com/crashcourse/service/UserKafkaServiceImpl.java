@@ -3,7 +3,6 @@ package com.crashcourse.service;
 import com.crashcourse.dto.UserListDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +10,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class UserKafkaServiceImpl implements UserKafkaService {
-    private final KafkaTemplate<String, UserListDto> kafkaStarshipTemplate;
+    private final KafkaTemplate<String, UserListDto> kafkaUserTemplate;
+    private final UserService userService;
 
-    @Value("${kafka.topic.user-list.response}")
-    private String userTopicIn;
-
-    public void send(UserListDto dto) {
-        log.info("send => {}", dto);
-        kafkaStarshipTemplate.send(userTopicIn, dto);
+    public void sendUserData(UserListDto dto, String topic) {
+        dto.setUsers(userService.getAllUsers());
+        log.debug("send => {}", dto);
+        kafkaUserTemplate.send(topic, dto);
     }
 }
