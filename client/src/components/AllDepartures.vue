@@ -62,7 +62,7 @@ export default {
     }
     this.$http.get('/departure/list')
     .then(response => {
-      this.departures = response.data.com.example.gateway.filter(item => item.userId === this.user.id)
+      this.departures = response.data.filter(item => item.userId === this.user.id)
       for(let i = 0; i < this.departures.length; ++i) {
         this.departures[i].departureDate = this.getDate(this.departures[i].departureDate)
       }

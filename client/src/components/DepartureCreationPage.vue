@@ -98,7 +98,7 @@ export default {
     setAddress(e) {
       if (this.selectedAddress !== '') {
         let id = e.target.value
-        let address = this.user.addresses.com.example.gateway.filter(addr => addr.id == id)[0]
+        let address = this.user.addresses.filter(addr => addr.id == id)[0]
         this.selected_point.center = [address.longitude, address.latitude]
         this.updateData()
         this.selectedAddress = ''
