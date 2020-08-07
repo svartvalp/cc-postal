@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -81,10 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> entity = new HttpEntity<>(userJson, headers);
-            ResponseEntity<UserDto> response = null;
             try {
-                response = new RestTemplate().postForEntity(usersServiceUrl + "/login", entity, UserDto.class);
-            } catch (HttpClientErrorException ignored) {
+                ResponseEntity<String> response = new RestTemplate().postForEntity(usersServiceUrl + "/login", entity, String.class);
+            } catch (HttpClientErrorException exception) {
                 throw new BadCredentialsException(messageService.getMessage("invalid.input.authentication"));
             }
             return authentication;
