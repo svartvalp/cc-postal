@@ -1,7 +1,7 @@
 <template>
   <div class="departure-view-container">
     <div class="departure-view-wrap">
-      <div class="map-container-title">Посылка № {{ this.departure.id }}</div>
+      <div class="departures-title-text">Посылка № {{ this.departure.id }}</div>
       <div class="map-container">
 
 

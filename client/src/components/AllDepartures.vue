@@ -1,6 +1,11 @@
 <template>
   <div class="main-field">
-    <div class="map-container-title">Ваши посылки</div>
+    <div class="departures-title-container">
+      <div class="departures-title-text">Ваши посылки</div>
+      <v-btn class="mx-2 departures-title-add-departure-button" fab dark color="indigo" justify-end @click="addDeparture">
+        <v-icon dark>mdi-plus</v-icon>
+      </v-btn>
+    </div>
     <v-container id="inspire">
       <v-card class="mx-auto">
         <v-list two-line>
@@ -43,6 +48,9 @@ export default {
     }
   },
   methods: {
+    addDeparture() {
+      this.$router.push('/departure/create')
+    },
     redirectToDeparture(departure) {
       localStorage.setItem('currentDeparture', JSON.stringify(departure));
       router.push('/departure');
@@ -58,7 +66,7 @@ export default {
   },
   mounted() {
     this.user = {
-      id: 223
+      id: 1
     }
     this.$http.get('/departure/list')
     .then(response => {
@@ -81,7 +89,7 @@ export default {
   height: 100%;
 }
 
-.map-container-title {
+.departures-title-text {
   font-size: 30pt;
   margin-bottom: 15px;
   font-style: revert;
@@ -108,4 +116,13 @@ export default {
 #inspire {
   width: 100%;
 }
+.departures-title-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+.departures-title-add-departure-button {
+
+  }
 </style>

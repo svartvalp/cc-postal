@@ -5,12 +5,19 @@
             <Header
                     :drawerState="drawerState"
                     @drawBar="drawBar"
+                    :isAuthenticated="isAuthenticated"
             />
             <NavigationBar
                     :drawerState="drawerState"
+                    @logout="logout"
+                    v-if="isAuthenticated"
             />
-            <MainPanel :user="user" />
-            <Footer/>
+            <MainPanel
+                    :user="user"
+                    @login="login"
+                    @logout="logout"
+            />
+            <Footer />
         </v-app>
     </div>
 </template>
@@ -20,7 +27,6 @@
     import NavigationBar from '@/components/root/NavigationBar'
     import Footer from '@/components/root/Footer'
     import MainPanel from '@/components/root/MainPanel'
-
 
     export default {
         name: 'App',
@@ -36,29 +42,43 @@
         },
         data() {
             return {
+                jwt: localStorage.getItem('jwt'),
                 drawerState: false,
-              //TODO create loading user data from back end
-              // mock user data
-                user: {
-                  id : 1,
-                  addresses : [{
-                    id : 1,
-                    longitude : 12,
-                    latitude : 13,
-                    name : 'Russia, Moscow, Москва, округ Тимирязевский, 127206, Ул. Астрадамская 3'
-                  },
-                    {
-                      id : 2,
-                      longitude : 13,
-                      latitude : 14,
-                      name : 'bbbb'
-                    }]
-                }
+                isAuthenticated : false,
+                user: {}
             }
         },
         methods: {
             drawBar(drawerState) {
                 this.drawerState = !drawerState;
+            },
+            logout() {
+                console.log('logout')
+                localStorage.clear();
+                this.$http.defaults.headers.common['Authorization'] = '';
+                this.$router.push('/login')
+                this.isAuthenticated = false
+                this.drawerState = false            },
+            login(user) {
+                this.isAuthenticated = true
+                this.user = user
+                console.log(user)
+            }
+        },
+        created() {
+            let token = localStorage.getItem('jwt')
+            if (token != null) {
+                this.$http.defaults.headers.common['Authorization'] = token
+                this.$http
+                    .get(`/user`)
+                    .then((response) => {
+                        this.isAuthenticated = true
+                        this.user = response.data
+                    })
+                .catch(() => {
+                    this.$http.defaults.headers.common['Authorization'] = ''
+                    this.logout()
+                })
             }
         }
     };

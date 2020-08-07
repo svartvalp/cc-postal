@@ -12,8 +12,16 @@ import javax.persistence.*;
 public class AddressEntity {
     @Id
     @Column(name = "id")
-    @SequenceGenerator(name = "ADDRESS_ID_GENERATOR", sequenceName = "address_seq", schema = "postal_schema", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADDRESS_ID_GENERATOR")
+    @SequenceGenerator(
+            name = "ADDRESS_ID_GENERATOR",
+            sequenceName = "address_seq",
+            schema = "postal_schema",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "ADDRESS_ID_GENERATOR"
+    )
     private Integer id;
     @Column(name = "longitude")
     private Double longitude;
