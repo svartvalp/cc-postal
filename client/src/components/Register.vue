@@ -14,6 +14,7 @@
                             sm="8"
                             md="4"
                     >
+
                         <v-card class="elevation-12">
                             <v-toolbar
                                     color="amber lighten-3"
@@ -82,22 +83,25 @@
                                             @blur="$v.password.$touch()"
                                             color="black"
                                     ></v-text-field>
-                                    <v-checkbox
-                                            v-model="checkbox"
-                                            :error-messages="checkboxErrors"
-                                            label="Вы согласны с условиями использования?"
-                                            required
-                                            @change="$v.checkbox.$touch()"
-                                            @blur="$v.checkbox.$touch()"
-                                            color="green"
-                                    ></v-checkbox>
                                     <v-card-actions class="justify-center">
-                                        <v-btn class="mr-4" @click="submit" color="amber lighten-3">Зарегистрироваться</v-btn>
+                                        <v-btn class="mr-4" @click="submit" color="amber lighten-3">Зарегистрироваться
+                                        </v-btn>
                                         <v-btn @click="clear">Очистить</v-btn>
                                     </v-card-actions>
                                 </form>
                             </v-card-text>
                         </v-card>
+                        <v-alert
+                                class="mt-6"
+                                id="errorAlert"
+                                v-model="this.alert.show"
+                                text
+                                prominent
+                                type="error"
+                                icon="mdi-alert-octagram"
+                        >
+                            {{ this.alert.errorMessage }}
+                        </v-alert>
                     </v-col>
                 </v-row>
             </v-container>
@@ -133,22 +137,71 @@
             passportNumber: '',
             password: '',
             checkbox: false,
-            user: {}
+            user: {},
+            alert: {
+                show: false,
+                errorMessage: ''
+            }
         }),
         methods: {
             submit() {
-                this.user.id = this.id;
-                this.user.firstName = this.firstName;
-                this.user.middleName = this.middleName;
-                this.user.lastName = this.lastName;
-                this.user.login = this.login;
-                this.user.passportNumber = this.passportNumber;
-                this.user.password = this.password;
+                if (this.firstName !== '') {
+                    this.user.firstName = this.firstName;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Укажите имя'
+                    return
+                }
+                if (this.middleName !== '') {
+                    this.user.middleName = this.middleName;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Укажите фамилию'
+                    return
+                }
+                if (this.lastName !== '') {
+                    this.user.lastName = this.lastName;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Укажите отчество'
+                    return
+                }
+                if (this.login !== '') {
+                    this.user.login = this.login;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Укажите логин'
+                    return
+                }
+                if (this.passportNumber !== '' && this.passportNumber.length === 10) {
+                    this.user.passportNumber = this.passportNumber;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Паспортные данные некорректны'
+                    return
+                }
+                if (this.password !== '') {
+                    this.user.password = this.password;
+                } else {
+                    this.alert.show = true
+                    this.alert.errorMessage = 'Укажите пароль'
+                    return
+                }
+
 
                 this.$http
                     .post('/register', this.user)
                     .then(() => this.$router.push('/'))
-                    .catch(err => console.log(err))
+                    .catch((err) => {
+                            console.log(err)
+                            this.alert.show = true
+                            if (err.response.status === 400) {
+                                this.alert.errorMessage = 'Логин уже существует'
+                            } else if (err.response.status === 500) {
+                                this.alert.errorMessage = 'Ошибка на сервере'
+                            }
+                        }
+                    )
             },
             clear() {
                 this.$v.$reset()
