@@ -1,7 +1,7 @@
 package com.crashcourse.msdeparture.repository;
 
-import org.springframework.data.repository.CrudRepository;
 import com.crashcourse.msdeparture.entity.Address;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 

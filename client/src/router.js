@@ -39,7 +39,7 @@ let router = new Router({
     ]
 })
 
-router.beforeEach((to,from,next) => {
+router.beforeEach((to, from, next) => {
     if (!to.path.match("\\/login|\\/register") && localStorage.getItem('jwt') == null) {
         next('/login')
     } else {

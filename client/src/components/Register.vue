@@ -11,8 +11,8 @@
                 >
                     <v-col
                             cols="12"
-                            sm="8"
                             md="4"
+                            sm="8"
                     >
 
                         <v-card class="elevation-12">
@@ -28,63 +28,63 @@
                             <v-card-text>
                                 <form>
                                     <v-text-field
-                                            v-model="firstName"
                                             :error-messages="nameErrors"
+                                            @blur="$v.firstName.$touch()"
+                                            @input="$v.firstName.$touch()"
+                                            color="black"
                                             label="Имя"
                                             required
-                                            @input="$v.firstName.$touch()"
-                                            @blur="$v.firstName.$touch()"
-                                            color="black"
+                                            v-model="firstName"
                                     ></v-text-field>
                                     <v-text-field
-                                            v-model="middleName"
                                             :error-messages="middleNameErrors"
+                                            @blur="$v.middleName.$touch()"
+                                            @input="$v.middleName.$touch()"
+                                            color="black"
                                             label="Фамилия"
                                             required
-                                            @input="$v.middleName.$touch()"
-                                            @blur="$v.middleName.$touch()"
-                                            color="black"
+                                            v-model="middleName"
                                     ></v-text-field>
                                     <v-text-field
-                                            v-model="lastName"
                                             :error-messages="lastNameErrors"
+                                            @blur="$v.lastName.$touch()"
+                                            @input="$v.lastName.$touch()"
+                                            color="black"
                                             label="Отчество"
                                             required
-                                            @input="$v.lastName.$touch()"
-                                            @blur="$v.lastName.$touch()"
-                                            color="black"
+                                            v-model="lastName"
                                     ></v-text-field>
                                     <v-text-field
-                                            v-model="login"
                                             :error-messages="loginErrors"
+                                            @blur="$v.login.$touch()"
+                                            @input="$v.login.$touch()"
+                                            color="black"
                                             label="Логин"
                                             required
-                                            @input="$v.login.$touch()"
-                                            @blur="$v.login.$touch()"
-                                            color="black"
+                                            v-model="login"
                                     ></v-text-field>
                                     <v-text-field
-                                            v-model="passportNumber"
-                                            :error-messages="passportNumberErrors"
                                             :counter="10"
+                                            :error-messages="passportNumberErrors"
+                                            @blur="$v.passportNumber.$touch()"
+                                            @input="$v.passportNumber.$touch()"
+                                            color="black"
                                             label="Серия и номер паспорта"
                                             required
-                                            @input="$v.passportNumber.$touch()"
-                                            @blur="$v.passportNumber.$touch()"
-                                            color="black"
+                                            v-model="passportNumber"
                                     ></v-text-field>
                                     <v-text-field
-                                            v-model="password"
                                             :error-messages="passwordErrors"
-                                            label="Пароль"
-                                            type="password"
-                                            required
-                                            @input="$v.password.$touch()"
                                             @blur="$v.password.$touch()"
+                                            @input="$v.password.$touch()"
                                             color="black"
+                                            label="Пароль"
+                                            required
+                                            type="password"
+                                            v-model="password"
                                     ></v-text-field>
                                     <v-card-actions class="justify-center">
-                                        <v-btn class="mr-4" @click="submit" color="amber lighten-3">Зарегистрироваться
+                                        <v-btn @click="submit" class="mr-4" color="amber lighten-3">Зарегистрироваться
                                         </v-btn>
                                         <v-btn @click="clear">Очистить</v-btn>
                                     </v-card-actions>
@@ -93,12 +93,12 @@
                         </v-card>
                         <v-alert
                                 class="mt-6"
-                                id="errorAlert"
-                                v-model="this.alert.show"
-                                text
-                                prominent
-                                type="error"
                                 icon="mdi-alert-octagram"
+                                id="errorAlert"
+                                prominent
+                                text
+                                type="error"
+                                v-model="this.alert.show"
                         >
                             {{ this.alert.errorMessage }}
                         </v-alert>

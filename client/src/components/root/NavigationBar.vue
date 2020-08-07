@@ -1,11 +1,11 @@
 <template>
     <v-navigation-drawer
-            v-model="drawerState"
             app
             dark
+            v-model="drawerState"
     >
         <v-list dense>
-            <v-list-item link @click="homePage">
+            <v-list-item @click="homePage" link>
                 <v-list-item-action>
                     <v-icon>mdi-home</v-icon>
                 </v-list-item-action>
@@ -13,7 +13,7 @@
                     <v-list-item-title>Домашняя страница</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link @click="departures">
+            <v-list-item @click="departures" link>
                 <v-list-item-action>
                     <v-icon>mdi-email</v-icon>
                 </v-list-item-action>
@@ -21,7 +21,7 @@
                     <v-list-item-title>Посылки</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link @click="account">
+            <v-list-item @click="account" link>
                 <v-list-item-action>
                     <v-icon>mdi-account</v-icon>
                 </v-list-item-action>
@@ -29,7 +29,7 @@
                     <v-list-item-title>Личный кабинет</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link @click="exit">
+            <v-list-item @click="exit" link>
                 <v-list-item-action>
                     <v-icon>mdi-arrow-left-circle</v-icon>
                 </v-list-item-action>

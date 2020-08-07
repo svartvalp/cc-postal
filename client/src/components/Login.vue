@@ -11,8 +11,8 @@
                 >
                     <v-col
                             cols="12"
-                            sm="8"
                             md="4"
+                            sm="8"
                     >
                         <v-alert type="error" v-model="show">
                             Неверное имя пользователя или пароль
@@ -30,29 +30,29 @@
                             <v-card-text>
                                 <v-form>
                                     <v-text-field
+                                            color="black"
                                             label="Логин"
                                             name="login"
-                                            v-model="userLoginData.login"
                                             prepend-icon="mdi-account"
                                             type="text"
-                                            color="black"
+                                            v-model="userLoginData.login"
                                     ></v-text-field>
 
                                     <v-text-field
+                                            color="black"
                                             id="password"
                                             label="Пароль"
                                             name="password"
-                                            v-model="userLoginData.password"
                                             prepend-icon="mdi-lock"
                                             type="password"
-                                            color="black"
+                                            v-model="userLoginData.password"
                                     ></v-text-field>
                                 </v-form>
                             </v-card-text>
                             <v-card-actions class="justify-center">
-                                <v-btn color="amber lighten-3" id="register" @click="registerMove">Зарегистрироваться
+                                <v-btn @click="registerMove" color="amber lighten-3" id="register">Зарегистрироваться
                                 </v-btn>
-                                <v-btn color="amber lighten-3" id="login" @click="login">Войти</v-btn>
+                                <v-btn @click="login" color="amber lighten-3" id="login">Войти</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>

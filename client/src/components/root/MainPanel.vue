@@ -4,25 +4,24 @@
                 class="fill-height"
         >
             <v-row>
-                <router-view :user="user" @login="login" @logout="logout" />
+                <router-view :user="user" @login="login" @logout="logout"/>
             </v-row>
         </v-container>
     </v-main>
 </template>
 <script>
-export default {
-    components: {
-    },
-    props : {
-        user : Object
-    },
-    methods: {
-        login(user) {
-            this.$emit('login', user)
+    export default {
+        components: {},
+        props: {
+            user: Object
         },
-        logout() {
-            this.$emit('logout')
+        methods: {
+            login(user) {
+                this.$emit('login', user)
+            },
+            logout() {
+                this.$emit('logout')
+            }
         }
     }
-}
 </script>

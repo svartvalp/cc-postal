@@ -56,9 +56,9 @@ public class UserServiceImpl implements UserService {
         if (userEntity == null) {
             throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
         }
-        if(userEntity.getAddress() != null) {
+        if (userEntity.getAddress() != null) {
             Optional<AddressEntity> address = addressRepository.findByAddress(userEntity.getAddress().getAddress());
-            if(address.isPresent()) {
+            if (address.isPresent()) {
                 userEntity.setAddress(address.get());
             } else {
                 addressRepository.save(userEntity.getAddress());
@@ -96,9 +96,9 @@ public class UserServiceImpl implements UserService {
             if (toSafe == null) {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
-            if(toSafe.getAddress() != null) {
+            if (toSafe.getAddress() != null) {
                 Optional<AddressEntity> address = addressRepository.findByAddress(toSafe.getAddress().getAddress());
-                if(address.isPresent()) {
+                if (address.isPresent()) {
                     toSafe.setAddress(address.get());
                 } else {
                     addressRepository.save(toSafe.getAddress());
@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService {
             return conversionService.convert(userRepository.save(toSafe), UserDto.class);
         }
     }
+
     @Transactional
     public UserDto getCurrentUser(String login) throws NoSuchEntityException {
         Optional<UserEntity> userEntity = userRepository.findByLogin(login);

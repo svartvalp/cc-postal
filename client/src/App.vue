@@ -4,8 +4,8 @@
         <v-app id="inspire">
             <Header
                     :drawerState="drawerState"
-                    @drawBar="drawBar"
                     :isAuthenticated="isAuthenticated"
+                    @drawBar="drawBar"
             />
             <NavigationBar
                     :drawerState="drawerState"
@@ -17,7 +17,7 @@
                     @login="login"
                     @logout="logout"
             />
-            <Footer />
+            <Footer/>
         </v-app>
     </div>
 </template>
@@ -44,7 +44,7 @@
             return {
                 jwt: localStorage.getItem('jwt'),
                 drawerState: false,
-                isAuthenticated : false,
+                isAuthenticated: false,
                 user: {}
             }
         },
@@ -58,7 +58,8 @@
                 this.$http.defaults.headers.common['Authorization'] = '';
                 this.$router.push('/login')
                 this.isAuthenticated = false
-                this.drawerState = false            },
+                this.drawerState = false
+            },
             login(user) {
                 this.isAuthenticated = true
                 this.user = user
@@ -75,10 +76,10 @@
                         this.isAuthenticated = true
                         this.user = response.data
                     })
-                .catch(() => {
-                    this.$http.defaults.headers.common['Authorization'] = ''
-                    this.logout()
-                })
+                    .catch(() => {
+                        this.$http.defaults.headers.common['Authorization'] = ''
+                        this.logout()
+                    })
             }
         }
     };
