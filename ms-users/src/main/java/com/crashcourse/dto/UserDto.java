@@ -18,4 +18,5 @@ public class UserDto {
     @JsonProperty(value = "password", access = Access.WRITE_ONLY)
     @NotNull
     private String password;
+    private AddressDto address;
 }
