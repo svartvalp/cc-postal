@@ -4,6 +4,7 @@ import com.crashcourse.dto.UserDto;
 import com.crashcourse.exception.AlreadyExistException;
 import com.crashcourse.exception.BadConvertException;
 import com.crashcourse.exception.BadRequestException;
+import com.crashcourse.exception.NoSuchEntityException;
 import com.crashcourse.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +40,10 @@ public class UserController {
     @PostMapping("/login")
     private ResponseEntity<?> loginUser(@Validated @RequestBody UserDto userDto) {
         return userService.authorization(userDto);
+    }
+
+    @GetMapping("/user")
+    private UserDto currentUser(@RequestParam String login) throws NoSuchEntityException {
+        return userService.getCurrentUser(login);
     }
 }

@@ -90,6 +90,15 @@ public class UserServiceImpl implements UserService {
             return conversionService.convert(userRepository.save(toSafe), UserDto.class);
         }
     }
+    @Transactional
+    public UserDto getCurrentUser(String login) throws NoSuchEntityException {
+        Optional<UserEntity> userEntity = userRepository.findByLogin(login);
+        return conversionService.convert(
+                userEntity.orElseThrow(() -> new NoSuchEntityException("no.such.entity.msg")),
+                UserDto.class
+        );
+
+    }
 
     @Transactional
     public List<UserDto> getAllUsers() {

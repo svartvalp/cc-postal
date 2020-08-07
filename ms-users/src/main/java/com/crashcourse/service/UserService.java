@@ -21,4 +21,6 @@ public interface UserService {
     UserDto updateUser(UserDto userDto) throws Exception;
 
     List<UserDto> getAllUsers();
+
+    UserDto getCurrentUser(String login) throws NoSuchEntityException;
 }
