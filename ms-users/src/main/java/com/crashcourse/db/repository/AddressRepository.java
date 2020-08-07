@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface AddressRepository extends CrudRepository<AddressEntity, Integer> {
-    Optional<AddressEntity> findByAddress(String address);
+    Optional<AddressEntity> findByLongitudeAndLatitude(Double longitude, Double latitude);
 }

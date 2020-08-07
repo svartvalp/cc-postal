@@ -5,7 +5,8 @@ create table postal_schema.address (
     id bigint primary key,
     longitude double precision,
     latitude double precision,
-    address varchar(100) unique
+    address varchar,
+    unique (longitude, latitude)
 );
 
 CREATE SEQUENCE postal_schema.address_seq START 1;

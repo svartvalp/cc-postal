@@ -57,7 +57,8 @@ public class UserServiceImpl implements UserService {
             throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
         }
         if (userEntity.getAddress() != null) {
-            Optional<AddressEntity> address = addressRepository.findByAddress(userEntity.getAddress().getAddress());
+            Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                    userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
             if (address.isPresent()) {
                 userEntity.setAddress(address.get());
             } else {
@@ -86,25 +87,24 @@ public class UserServiceImpl implements UserService {
         if (userDto == null) {
             throw new BadRequestException(messageService.getMessage("bad.request.msg"));
         }
-        userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new NoSuchEntityException(messageService.getMessage("no.such.entity.msg")));
-        Optional<UserEntity> userEntity = userRepository.findByLogin(userDto.getLogin());
-        if (userEntity.isPresent() && !userEntity.get().getId().equals(userDto.getId())) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByLogin(userDto.getLogin());
+        if (optionalUserEntity.isPresent() && !optionalUserEntity.get().getId().equals(userDto.getId())) {
             throw new AlreadyExistException(messageService.getMessage("already.exists.msg"));
         } else {
-            UserEntity toSafe = conversionService.convert(userDto, UserEntity.class);
-            if (toSafe == null) {
+            UserEntity userEntity = conversionService.convert(userDto, UserEntity.class);
+            if (userEntity == null) {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
-            if (toSafe.getAddress() != null) {
-                Optional<AddressEntity> address = addressRepository.findByAddress(toSafe.getAddress().getAddress());
+            if (userEntity.getAddress() != null) {
+                Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                        userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
                 if (address.isPresent()) {
-                    toSafe.setAddress(address.get());
+                    userEntity.setAddress(address.get());
                 } else {
-                    addressRepository.save(toSafe.getAddress());
+                    addressRepository.save(userEntity.getAddress());
                 }
             }
-            return conversionService.convert(userRepository.save(toSafe), UserDto.class);
+            return conversionService.convert(userRepository.save(userEntity), UserDto.class);
         }
     }
 
