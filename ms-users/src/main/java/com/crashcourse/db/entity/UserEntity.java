@@ -27,18 +27,12 @@ public class UserEntity {
     private String passportNumber;
     @Column(name = "password")
     private String password;
-    @ManyToOne(
-            fetch = FetchType.EAGER
-    )
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_addresses",
             schema = "postal_schema",
-            joinColumns = {@JoinColumn(
-                    name = "user_id"
-            )},
-            inverseJoinColumns = {@JoinColumn(
-                    name = "address_id"
-            )}
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "address_id")}
     )
     private AddressEntity address;
 }

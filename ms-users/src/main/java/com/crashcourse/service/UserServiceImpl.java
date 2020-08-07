@@ -1,6 +1,8 @@
 package com.crashcourse.service;
 
+import com.crashcourse.db.entity.AddressEntity;
 import com.crashcourse.db.entity.UserEntity;
+import com.crashcourse.db.repository.AddressRepository;
 import com.crashcourse.db.repository.UserRepository;
 import com.crashcourse.dto.UserDto;
 import com.crashcourse.exception.AlreadyExistException;
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final ConversionService conversionService;
     private final UserRepository userRepository;
     private final MessageService messageService;
+    private final AddressRepository addressRepository;
 
     @Transactional
     public UserDto getUserById(Integer id) throws NoSuchEntityException {
@@ -55,6 +58,15 @@ public class UserServiceImpl implements UserService {
         if (userEntity == null) {
             throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
         }
+        if (userEntity.getAddress() != null) {
+            Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                    userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
+            if (address.isPresent()) {
+                userEntity.setAddress(address.get());
+            } else {
+                addressRepository.save(userEntity.getAddress());
+            }
+        }
         userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
         return conversionService.convert(userRepository.save(userEntity), UserDto.class);
     }
@@ -77,19 +89,27 @@ public class UserServiceImpl implements UserService {
         if (userDto == null) {
             throw new BadRequestException(messageService.getMessage("bad.request.msg"));
         }
-        userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new NoSuchEntityException(messageService.getMessage("no.such.entity.msg")));
-        Optional<UserEntity> userEntity = userRepository.findByLogin(userDto.getLogin());
-        if (userEntity.isPresent() && !userEntity.get().getId().equals(userDto.getId())) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByLogin(userDto.getLogin());
+        if (optionalUserEntity.isPresent() && !optionalUserEntity.get().getId().equals(userDto.getId())) {
             throw new AlreadyExistException(messageService.getMessage("already.exists.msg"));
         } else {
-            UserEntity toSafe = conversionService.convert(userDto, UserEntity.class);
-            if (toSafe == null) {
+            UserEntity userEntity = conversionService.convert(userDto, UserEntity.class);
+            if (userEntity == null) {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
-            return conversionService.convert(userRepository.save(toSafe), UserDto.class);
+            if (userEntity.getAddress() != null) {
+                Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                        userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
+                if (address.isPresent()) {
+                    userEntity.setAddress(address.get());
+                } else {
+                    addressRepository.save(userEntity.getAddress());
+                }
+            }
+            return conversionService.convert(userRepository.save(userEntity), UserDto.class);
         }
     }
+
     @Transactional
     public UserDto getCurrentUser(String login) throws NoSuchEntityException {
         Optional<UserEntity> userEntity = userRepository.findByLogin(login);

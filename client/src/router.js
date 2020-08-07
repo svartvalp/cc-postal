@@ -6,24 +6,45 @@ import Departure from "@/components/Departure";
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
     mode: 'history',
     routes: [
         {
-            path: '/login',
-            component: () => import('./components/Login')
+            path: '/',
+            component: AllDepartures,
         },
         {
             path: '/departure/create',
-            component : DepartureCreationPage
+            component: DepartureCreationPage,
+        },
+        {
+            path: '/user',
         },
         {
             path: '/departures',
-            component: AllDepartures
+            component: AllDepartures,
         },
         {
             path: '/departure',
-            component: Departure
+            component: Departure,
+        },
+        {
+            path: '/login',
+            component: () => import('./components/Login'),
+        },
+        {
+            path: '/register',
+            component: () => import('./components/Register'),
         }
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if (!to.path.match("\\/login|\\/register") && localStorage.getItem('jwt') == null) {
+        next('/login')
+    } else {
+        next()
+    }
+})
+
+export default router
