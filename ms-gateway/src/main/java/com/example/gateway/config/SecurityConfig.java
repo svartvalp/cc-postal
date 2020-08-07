@@ -3,10 +3,12 @@ package com.example.gateway.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.example.gateway.dto.LoginUserDto;
 import com.example.gateway.dto.UserDto;
 import com.example.gateway.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.gateway.filter.CurruentUserFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
@@ -20,9 +22,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -52,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(usernamePasswordAuthenticationFilter())
                 .addFilterBefore(TokenAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(TokenAuthorizationFilter(), LogoutFilter.class)
+                .addFilterAfter(currentUserFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout().addLogoutHandler(((request, response, authentication) -> {
             tokenStorage().remove(authentication.getCredentials());
             response.setStatus(SC_OK);
@@ -64,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() {
         UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
         filter.setAuthenticationManager(authentication -> {
-            UserDto userDto = new UserDto();
+            LoginUserDto userDto = new LoginUserDto();
             userDto.setLogin((String) authentication.getPrincipal());
             userDto.setPassword((String) authentication.getCredentials());
             String userJson;
@@ -76,12 +82,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> entity = new HttpEntity<>(userJson, headers);
-            ResponseEntity<String> response = new RestTemplate().postForEntity(usersServiceUrl + "/login", entity, String.class);
-            if (response.getStatusCode() != HttpStatus.OK) {
+            try {
+                ResponseEntity<String> response = new RestTemplate().postForEntity(usersServiceUrl + "/login", entity, String.class);
+            } catch (HttpClientErrorException exception) {
                 throw new BadCredentialsException(messageService.getMessage("invalid.input.authentication"));
-            } else {
-                return authentication;
             }
+            return authentication;
         });
 
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> {
@@ -123,9 +129,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-
     @Bean
     public Set<String> tokenStorage() {
         return new TreeSet<>();
+    }
+
+    @Bean
+    public Filter currentUserFilter() {
+        return new CurruentUserFilter(tokenStorage());
     }
 }
