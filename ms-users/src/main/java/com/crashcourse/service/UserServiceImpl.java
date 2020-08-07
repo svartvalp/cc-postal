@@ -1,6 +1,8 @@
 package com.crashcourse.service;
 
+import com.crashcourse.db.entity.AddressEntity;
 import com.crashcourse.db.entity.UserEntity;
+import com.crashcourse.db.repository.AddressRepository;
 import com.crashcourse.db.repository.UserRepository;
 import com.crashcourse.dto.UserDto;
 import com.crashcourse.exception.AlreadyExistException;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final ConversionService conversionService;
     private final UserRepository userRepository;
     private final MessageService messageService;
+    private final AddressRepository addressRepository;
 
     @Transactional
     public UserDto getUserById(Integer id) throws NoSuchEntityException {
@@ -52,6 +55,14 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = conversionService.convert(userDto, UserEntity.class);
         if (userEntity == null) {
             throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
+        }
+        if(userEntity.getAddress() != null) {
+            Optional<AddressEntity> address = addressRepository.findByAddress(userEntity.getAddress().getAddress());
+            if(address.isPresent()) {
+                userEntity.setAddress(address.get());
+            } else {
+                addressRepository.save(userEntity.getAddress());
+            }
         }
         userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
         return conversionService.convert(userRepository.save(userEntity), UserDto.class);
@@ -84,6 +95,14 @@ public class UserServiceImpl implements UserService {
             UserEntity toSafe = conversionService.convert(userDto, UserEntity.class);
             if (toSafe == null) {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
+            }
+            if(toSafe.getAddress() != null) {
+                Optional<AddressEntity> address = addressRepository.findByAddress(toSafe.getAddress().getAddress());
+                if(address.isPresent()) {
+                    toSafe.setAddress(address.get());
+                } else {
+                    addressRepository.save(toSafe.getAddress());
+                }
             }
             return conversionService.convert(userRepository.save(toSafe), UserDto.class);
         }
