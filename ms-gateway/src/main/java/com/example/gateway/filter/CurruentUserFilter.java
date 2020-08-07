@@ -39,6 +39,8 @@ public class CurruentUserFilter implements Filter {
                 String userJson = mapper.writeValueAsString(responseEntity.getBody());
                 httpResponseRequest.getWriter().println(userJson);
             }
+        } else {
+            chain.doFilter(request, response);
         }
     }
 }

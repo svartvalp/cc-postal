@@ -99,7 +99,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             response.setHeader("Authorization", "Bearer " + token);
             tokenStorage().add(token);
         });
-
         return filter;
     }
 
