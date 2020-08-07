@@ -57,7 +57,8 @@ public class UserServiceImpl implements UserService {
             throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
         }
         if(userEntity.getAddress() != null) {
-            Optional<AddressEntity> address = addressRepository.findByAddress(userEntity.getAddress().getAddress());
+            Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                    userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
             if(address.isPresent()) {
                 userEntity.setAddress(address.get());
             } else {
@@ -97,7 +98,8 @@ public class UserServiceImpl implements UserService {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
             if(toSafe.getAddress() != null) {
-                Optional<AddressEntity> address = addressRepository.findByAddress(toSafe.getAddress().getAddress());
+                Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                        toSafe.getAddress().getLongitude(), toSafe.getAddress().getLatitude());
                 if(address.isPresent()) {
                     toSafe.setAddress(address.get());
                 } else {
