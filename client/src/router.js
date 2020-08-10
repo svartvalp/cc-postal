@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import DepartureCreationPage from "@/components/DepartureCreationPage";
 import AllDepartures from "@/components/AllDepartures";
 import Departure from "@/components/Departure";
+import Account from "@/components/Account";
 
 Vue.use(Router)
 
@@ -19,6 +20,7 @@ let router = new Router({
         },
         {
             path: '/user',
+            component: Account,
         },
         {
             path: '/departures',
