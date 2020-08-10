@@ -55,13 +55,13 @@
           background-color='#FAFAFA'
           v-model="userInfo.address.address"
       ></v-text-field>
-      <v-btn @click="isReadOnly=!isReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
+      <v-btn @click="switchReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
       <div v-else>
-        <v-btn @click="isReadOnly=!isReadOnly; userInfo = JSON.parse(JSON.stringify(userInfoOrig))"
+        <v-btn @click="onCancelChangingUsersInfoClick"
                style="margin: 10px">
           Отмена
         </v-btn>
-        <v-btn @click="isReadOnly=!isReadOnly; submitUserInfo()">Сохранить</v-btn>
+        <v-btn @click="submitUserInfo">Сохранить</v-btn>
       </div>
     </v-form>
     <v-dialog max-width="600px" persistent v-model="dialog">
@@ -99,7 +99,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="dialog = false; newPassword=''; newPasswordVerification=''; passwordChangeAlert.show=false"
+          <v-btn @click='onCancelChangingPasswordClick'
                  color="blue darken-1"
                  text>Закрыть
           </v-btn>
@@ -140,6 +140,7 @@ export default {
   },
   methods: {
     submitUserInfo() {
+      this.switchReadOnly();
       this.$http
           .put(`/user`, JSON.parse(JSON.stringify(this.userInfo)))
           .then(() => {
@@ -169,11 +170,20 @@ export default {
       this.userInfo = this.userInfoOrig;
     },
     fieldBackgroundColor() {
-      if (this.isReadOnly) {
-        return "#FAFAFA"
-      } else {
-        return "#FFFFFF"
-      }
+      return this.isReadOnly ? "#FAFAFA" : "#FFFFFF"
+    },
+    switchReadOnly() {
+      this.isReadOnly = !this.isReadOnly
+    },
+    onCancelChangingUsersInfoClick() {
+      this.switchReadOnly();
+      this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig))
+    },
+    onCancelChangingPasswordClick() {
+      this.dialog = false;
+      this.newPassword = '';
+      this.newPasswordVerification = '';
+      this.passwordChangeAlert.show = false
     }
   }
 }
