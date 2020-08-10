@@ -16,7 +16,6 @@ public class UserDto {
     private String login;
     private String passportNumber;
     @JsonProperty(value = "password", access = Access.WRITE_ONLY)
-    @NotNull
     private String password;
     private AddressDto address;
 }

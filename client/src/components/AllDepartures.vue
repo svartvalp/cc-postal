@@ -45,14 +45,14 @@
     import router from "@/router";
 
     export default {
-        data() {
-            return {
-                props: {
-                    user: Object
-                },
-                departures: [],
-            }
-        },
+      props: {
+        user: Object
+      },
+      data() {
+        return {
+          departures: [],
+        }
+      },
         methods: {
             addDeparture() {
                 this.$router.push('/departure/create')
@@ -71,9 +71,6 @@
             },
         },
         mounted() {
-            this.user = {
-                id: 5
-            }
             this.$http.get('/departure/list')
                 .then(response => {
                     this.departures = response.data.filter(item => item.userId === this.user.id)

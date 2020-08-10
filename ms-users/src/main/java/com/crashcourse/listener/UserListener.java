@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class UserListener {
-    private UserKafkaService userKafkaService;
+    private final UserKafkaService userKafkaService;
 
     @Value("${kafka.topic.user-list.response}")
     private String userToNavigation;
