@@ -4,47 +4,55 @@
       <p class="text-center text-h4">Профиль</p>
       <v-text-field
           class="centered-input"
-          filled
           label="ID"
           readonly
+          outlined
+          background-color="#FAFAFA"
           v-model="userInfo.id"
       ></v-text-field>
       <v-text-field
-          filled
           label="Логин"
           readonly
           required
+          outlined
+          background-color="#FAFAFA"
           v-model="userInfo.login"
       ></v-text-field>
       <v-text-field
-          :filled="isReadOnly"
           label="Имя"
           required
+          outlined
+          :background-color="fieldBackgroundColor()"
           v-model="userInfo.firstName"
       ></v-text-field>
       <v-text-field
-          :filled="isReadOnly"
           label="Отчество"
           required
+          outlined
+          :background-color="fieldBackgroundColor()"
           v-model="userInfo.middleName"
       ></v-text-field>
       <v-text-field
-          :filled="isReadOnly"
           label="Фамилия"
           required
+          outlined
+          :background-color="fieldBackgroundColor()"
           v-model="userInfo.lastName"
       ></v-text-field>
       <v-text-field
-          :filled="isReadOnly"
           label="Номер паспорта"
           required
+          filled
+          outlined
+          :background-color="fieldBackgroundColor()"
           v-model="userInfo.passportNumber"
       ></v-text-field>
       <v-text-field
           label="Адрес"
           required
           readonly
-          filled
+          outlined
+          background-color='#FAFAFA'
           v-model="userInfo.address.address"
       ></v-text-field>
       <v-btn @click="isReadOnly=!isReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
@@ -74,8 +82,8 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field v-model="newPass1" label="Новый пароль" required type="password"></v-text-field>
-            <v-text-field v-model="newPass2" label="Повторите" required type="password"></v-text-field>
+            <v-text-field v-model="newPassword" label="Новый пароль" required type="password"></v-text-field>
+            <v-text-field v-model="newPasswordVerification" label="Повторите" required type="password"></v-text-field>
             <v-alert
                 class="mt-6"
                 icon="mdi-alert-octagram"
@@ -91,7 +99,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="dialog = false; newPass1=''; newPass2=''; passwordChangeAlert.show=false" color="blue darken-1"
+          <v-btn @click="dialog = false; newPassword=''; newPasswordVerification=''; passwordChangeAlert.show=false"
+                 color="blue darken-1"
                  text>Закрыть
           </v-btn>
           <v-btn @click="submitPassword" color="blue darken-1" text>Сохранить</v-btn>
@@ -107,22 +116,22 @@ export default {
   name: "Account",
   data() {
     return {
-      userInfo: {},
-      userInfoOrig: {},
+      userInfo: null,
+      userInfoOrig: null,
       isReadOnly: true,
       dialog: false,
-      newPass1: '',
-      newPass2: '',
+      newPassword: null,
+      newPasswordVerification: null,
       passwordChangeAlert: {
         show: false,
-        errorMessage: ''
+        errorMessage: null
       }
     }
   },
   mounted() {
     this.$http.get('/user')
         .then(response => {
-          if (response.data.address == null) {
+          if (!response.data.address) {
             response.data.address = {};
           }
           this.userInfo = response.data;
@@ -139,25 +148,32 @@ export default {
           })
     },
     submitPassword() {
-      if (this.newPass1 !== this.newPass2) {
+      if (this.newPassword !== this.newPasswordVerification) {
         this.passwordChangeAlert.show = true;
         this.passwordChangeAlert.errorMessage = 'Пароли должны совпадать';
-        this.newPass2 = '';
-        this.newPass1 = '';
+        this.newPasswordVerification = null;
+        this.newPassword = null;
         return
       }
-      if (this.newPass1 === '') {
+      if (!this.newPassword) {
         this.passwordChangeAlert.show = true;
         this.passwordChangeAlert.errorMessage = 'Пароль не может быть пустым';
-        this.newPass2 = '';
-        this.newPass1 = '';
+        this.newPasswordVerification = null;
+        this.newPassword = null;
         return
       }
-      this.userInfo.password = this.newPass1;
+      this.userInfo.password = this.newPassword;
       this.$http
           .put(`/user`, this.userInfo)
       this.dialog = false;
       this.userInfo = this.userInfoOrig;
+    },
+    fieldBackgroundColor() {
+      if (this.isReadOnly) {
+        return "#FAFAFA"
+      } else {
+        return "#FFFFFF"
+      }
     }
   }
 }
