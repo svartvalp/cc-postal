@@ -16,12 +16,13 @@ public class UserDtoUserEntityConverter implements Converter<UserDto, UserEntity
         userEntity.setPassportNumber(source.getPassportNumber());
         userEntity.setPassword(source.getPassword());
         userEntity.setId(source.getId());
-        userEntity.setAddress(new AddressEntity());
         if (source.getAddress() != null) {
-            userEntity.getAddress().setAddress(source.getAddress().getAddress());
-            userEntity.getAddress().setId(source.getAddress().getId());
-            userEntity.getAddress().setLatitude(source.getAddress().getLatitude());
-            userEntity.getAddress().setLongitude(source.getAddress().getLongitude());
+            AddressEntity addressEntity = new AddressEntity();
+            addressEntity.setId(source.getAddress().getId());
+            addressEntity.setLongitude(source.getAddress().getLongitude());
+            addressEntity.setLatitude(source.getAddress().getLatitude());
+            addressEntity.setAddress(source.getAddress().getAddress());
+            userEntity.setAddress(addressEntity);
         }
         return userEntity;
     }

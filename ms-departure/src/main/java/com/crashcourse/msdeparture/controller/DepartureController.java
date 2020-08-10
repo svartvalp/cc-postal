@@ -1,9 +1,9 @@
 package com.crashcourse.msdeparture.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 import com.crashcourse.msdeparture.dto.DepartureDto;
 import com.crashcourse.msdeparture.service.DepartureService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -19,6 +19,7 @@ public class CurruentUserFilter implements Filter {
     private final Set<String> tokenStorage;
     @Value("${zuul.routes.user.url}")
     private String usersServiceUrl;
+
     public CurruentUserFilter(Set<String> tokens) {
         this.tokenStorage = tokens;
     }
@@ -30,11 +31,11 @@ public class CurruentUserFilter implements Filter {
         String uri = httpServletRequest.getRequestURI();
         String token = httpServletRequest.getHeader("Authorization");
         String method = httpServletRequest.getMethod();
-        if("/user".equals(uri) && !token.isEmpty() && token.startsWith("Bearer ") && "GET".equals(method)) {
-            if(tokenStorage.contains(token.replace("Bearer ", ""))) {
+        if ("/user".equals(uri) && !token.isEmpty() && token.startsWith("Bearer ") && "GET".equals(method)) {
+            if (tokenStorage.contains(token.replace("Bearer ", ""))) {
                 DecodedJWT jwt = JWT.decode(token.replace("Bearer ", ""));
                 String login = jwt.getSubject();
-                ResponseEntity<UserDto> responseEntity= new RestTemplate().getForEntity(usersServiceUrl + "/user?login=" + login, UserDto.class);
+                ResponseEntity<UserDto> responseEntity = new RestTemplate().getForEntity(usersServiceUrl + "/user?login=" + login, UserDto.class);
                 ObjectMapper mapper = new ObjectMapper();
                 String userJson = mapper.writeValueAsString(responseEntity.getBody());
                 httpResponseRequest.getWriter().println(userJson);

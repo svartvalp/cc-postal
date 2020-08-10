@@ -6,16 +6,12 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(
-        name = "address"
-)
+@Table(name = "address")
 @Getter
 @Setter
 public class AddressEntity {
     @Id
-    @Column(
-            name = "id"
-    )
+    @Column(name = "id")
     @SequenceGenerator(
             name = "ADDRESS_ID_GENERATOR",
             sequenceName = "address_seq",
@@ -27,16 +23,10 @@ public class AddressEntity {
             generator = "ADDRESS_ID_GENERATOR"
     )
     private Integer id;
-    @Column(
-            name = "longitude"
-    )
+    @Column(name = "longitude")
     private Double longitude;
-    @Column(
-            name = "latitude"
-    )
+    @Column(name = "latitude")
     private Double latitude;
-    @Column(
-            name = "address"
-    )
+    @Column(name = "address")
     private String address;
 }
