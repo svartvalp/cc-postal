@@ -27,12 +27,7 @@ public class UserEntity {
     private String passportNumber;
     @Column(name = "password")
     private String password;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_addresses",
-            schema = "postal_schema",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "address_id")}
-    )
+    @OneToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressEntity address;
 }

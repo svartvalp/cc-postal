@@ -10,8 +10,7 @@ CREATE TABLE postal_schema.departure (
     departure_date timestamp,
     arrived boolean,
     weight INTEGER,
-    description varchar(255),
-    nearest_user_id bigint
+    description varchar(255)
 );
 
 CREATE SEQUENCE postal_schema.departure_seq START WITH 1;
@@ -27,4 +26,3 @@ COMMENT ON COLUMN postal_schema.departure.departure_date IS 'дата отпра
 COMMENT ON COLUMN postal_schema.departure.weight IS 'вес посылки';
 COMMENT ON COLUMN postal_schema.departure.arrived IS 'статус посылки (пришла/в пути)';
 COMMENT ON COLUMN postal_schema.departure.description IS 'описание';
-COMMENT ON COLUMN postal_schema.departure.nearest_user_id IS 'id ближайшего к адресу доставки пользователя';
