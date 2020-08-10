@@ -72,7 +72,7 @@
         },
         mounted() {
             this.user = JSON.parse(localStorage.getItem('user'));
-            this.$http.get('/departure/list/' + this.user.id)
+            this.$http.get(`/departure/list/${this.user.id}`)
                 .then(response => {
                     this.departures = response.data
                     for (let i = 0; i < this.departures.length; ++i) {

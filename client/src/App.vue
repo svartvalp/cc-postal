@@ -62,6 +62,7 @@
             login(user) {
                 this.isAuthenticated = true
                 this.user = user
+                localStorage.setItem('user', JSON.stringify(this.user))
             }
         },
         created() {
