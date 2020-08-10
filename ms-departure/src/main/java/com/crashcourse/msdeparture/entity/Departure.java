@@ -22,6 +22,8 @@ public class Departure {
     private Long id;
     @Column(name = "user_id")
     private Long userId;
+    @Column(name = "nearest_user_id")
+    private Long nearestUserId;
     @ManyToOne
     @JoinColumn(name = "departure_point_id")
     private Address departurePoint;
@@ -32,11 +34,12 @@ public class Departure {
     private String type;
     @Column(name = "departure_date")
     private LocalDateTime departureDate;
+    @Column(name = "arriving_date")
+    private LocalDateTime arrivingDate;
     @Column(name = "arrived")
     private Boolean arrived;
     @Column(name = "weight")
     private Integer weight;
     @Column(name = "description")
     private String description;
-
 }
