@@ -71,7 +71,7 @@
             },
         },
         mounted() {
-            this.$http.get('/departure/list')
+            this.$http.get(`/departure/list/${this.user.id}`)
                 .then(response => {
                     this.departures = response.data.filter(item => item.userId === this.user.id)
                     for (let i = 0; i < this.departures.length; ++i) {
