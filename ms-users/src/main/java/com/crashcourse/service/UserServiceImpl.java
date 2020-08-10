@@ -18,7 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,12 +104,14 @@ public class UserServiceImpl implements UserService {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
             if (userEntity.getAddress() != null) {
-                Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
-                        userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
-                if (address.isPresent()) {
-                    userEntity.setAddress(address.get());
-                } else {
-                    addressRepository.save(userEntity.getAddress());
+                if(!(userEntity.getAddress().getLatitude() == null || userEntity.getAddress().getLongitude() == null || userEntity.getAddress() == null)) {
+                    Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                            userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
+                    if (address.isPresent()) {
+                        userEntity.setAddress(address.get());
+                    } else {
+                        addressRepository.save(userEntity.getAddress());
+                    }
                 }
             }
             if (userEntity.getPassword() == null) {
@@ -126,5 +130,13 @@ public class UserServiceImpl implements UserService {
                 userEntity.orElseThrow(() -> new NoSuchEntityException("no.such.entity.msg")),
                 UserDto.class
         );
+    }
+
+    @Transactional
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userEntity -> conversionService.convert(userEntity, UserDto.class))
+                .collect(Collectors.toList());
     }
 }

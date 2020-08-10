@@ -7,9 +7,13 @@ import java.util.List;
 public interface DepartureService {
     DepartureDto createDeparture(DepartureDto departureDto);
 
-    List<DepartureDto> getAllDepartures();
+    List<DepartureDto> getAllDeparturesByUserId(Long id);
+
+    List<DepartureDto> getAllDeparturesByNearestUserId(Long nearestUserId);
 
     DepartureDto getDepartureById(Long id);
 
     void deleteDeparture(Long id);
+
+    void update(DepartureDto departureDto);
 }

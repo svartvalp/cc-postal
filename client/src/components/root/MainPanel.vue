@@ -4,7 +4,7 @@
                 class="fill-height"
         >
             <v-row>
-                <router-view :user="user" @login="login" @logout="logout"/>
+                <router-view v-bind:user="user" @login="login" @logout="logout" @update-user="updateUser"/>
             </v-row>
         </v-container>
     </v-main>
@@ -15,12 +15,17 @@
         props: {
             user: Object
         },
-        methods: {
+      mounted() {
+      },
+      methods: {
             login(user) {
                 this.$emit('login', user)
             },
             logout() {
                 this.$emit('logout')
+            },
+            updateUser(user){
+              this.$emit('update-user', user)
             }
         }
     }

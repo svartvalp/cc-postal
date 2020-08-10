@@ -19,5 +19,6 @@ public class DepartureDto {
     private String description;
     private LocalDateTime departureDate;
     private LocalDateTime arrivingDate;
+    private UserDto addressee;
 }
 

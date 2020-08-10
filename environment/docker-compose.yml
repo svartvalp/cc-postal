@@ -1,5 +1,76 @@
 version: '3.7'
 services:
+  frontend:
+    image: crashcourse-frontend-app
+    build:
+      context: ../client
+      dockerfile: Dockerfile
+    environment:
+      HOST: crashcourse-ms-gateway
+    ports:
+    - '8085:80'
+    depends_on:
+      - crashcourse-ms-gateway
+  crashcourse-ms-navigation:
+    image: crashcourse-ms-navigation
+    build:
+      context: ..
+      dockerfile: ./ms-navigation/Dockerfile
+    environment:
+      APPNAVIGATION_API_ACCESS_TOKEN: pk.eyJ1Ijoic3ZhcnR2YWxwIiwiYSI6ImNrZDhqNm1leTB1bmoycXNjOGpvcmpubDcifQ.8a3iefrMWmydU-1bk8gLUQ
+      APPNAVIGATION_DB_HOST: mongo
+      APPNAVIGATION_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+      - '8082:8082'
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongo
+
+  crashcourse-ms-users:
+    image: crashcourse-ms-users
+    build:
+      context: ..
+      dockerfile: ./ms-users/Dockerfile
+    environment:
+      APPUSERS_DB_HOST: postgres
+      APPUSERS_LOGGING_REQUESTS: "true"
+      APPUSERS_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+    - '8081:8081'
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+  crashcourse-ms-departure:
+    image: crashcourse-ms-departure
+    build:
+      context: ..
+      dockerfile: ./ms-departure/Dockerfile
+    environment:
+      APPDEPARTURE_DB_HOST: postgres
+      APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+    - '8083:8083'
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+  crashcourse-ms-gateway:
+    image: crashcourse-ms-gateway
+    build:
+      context: ..
+      dockerfile: ./ms-gateway/Dockerfile
+    ports:
+    - '8080:8080'
+    environment:
+      APPGATEWAY_USERS_SERVICE_URL: http://crashcourse-ms-users:8081/
+      APPGATEWAY_NAVIGATION_SERVICE_URL: http://crashcourse-ms-navigation:8082/
+      APPGATEWAY_DEPARTURE_SERVICE_URL: http://crashcourse-ms-departure:8083/
+    depends_on:
+      - crashcourse-ms-departure
+      - crashcourse-ms-navigation
+      - crashcourse-ms-users
   postgres:
     image: postgres:11
     ports:
@@ -10,7 +81,7 @@ services:
     environment:
       POSTGRES_PASSWORD: "admin"
       POSTGRES_USER: "admin"
-      POSRGRES_DB: "postal"
+      POSTGRES_DB: "postal"
     restart: always
   mongo:
     image: mongo:4.4.0-rc10
@@ -29,7 +100,14 @@ services:
     image: wurstmeister/kafka
     ports:
       - 9092:9092
+    expose:
+      - 9093
     environment:
-      KAFKA_ZOOKEEPER_CONNECT:  "zookeeper:2181"
+      KAFKA_ZOOKEEPER_CONNECT:  zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     links:
       - zookeeper

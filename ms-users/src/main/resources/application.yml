@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${APPUSERS_DB_HOST:localhost}:${APPUSERS_DB_PORT:5432}/${APPUSERS_DB_NAME:admin}
+    url: jdbc:postgresql://${APPUSERS_DB_HOST:localhost}:${APPUSERS_DB_PORT:5432}/${APPUSERS_DB_NAME:postal}
     username: ${APPUSERS_DB_USERNAME:admin}
     password: ${APPUSERS_DB_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
@@ -14,3 +14,10 @@ server:
 project:
   logging:
     enabled: ${APPUSERS_LOGGING_REQUESTS:false}
+kafka:
+  server: ${APPUSERS_KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+  topic:
+    user-list:
+      request: ${APPUSERS_KAFKA_USER_LIST_REQUEST_TOPIC:user_list_request}
+      response: ${APPUSERS_KAFKA_USER_LIST_RESPONSE_TOPIC:user_list_result}
+  group_id: ${APPUSERS_KAFKA_GROUP_ID:ms-user}

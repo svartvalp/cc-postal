@@ -2,6 +2,7 @@ package com.crashcourse.msdeparture.service;
 
 import com.crashcourse.msdeparture.dto.AddressDto;
 import com.crashcourse.msdeparture.dto.DepartureDto;
+import com.crashcourse.msdeparture.dto.UserDto;
 import com.crashcourse.msdeparture.entity.Address;
 import com.crashcourse.msdeparture.entity.Departure;
 import com.crashcourse.msdeparture.exception.DepartureNotFoundException;
@@ -10,6 +11,7 @@ import com.crashcourse.msdeparture.repository.DepartureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +29,10 @@ public class DepartureServiceImpl implements DepartureService {
     private final AddressRepository addressRepository;
     private final ModelMapper modelMapper;
     private final MessageService messageService;
+    private final DepartureMessageSender departureMessageSender;
+
+    @Value("${kafka.topic.departure.compute}")
+    private String departureRequest;
 
     @Transactional
     @Override
@@ -90,15 +95,42 @@ public class DepartureServiceImpl implements DepartureService {
         departure = departureRepository.save(departure);
         log.info("Create departure with id = {}", departure.getId());
 
-        return modelMapper.map(departure, DepartureDto.class);
+        DepartureDto departureRequestDto = modelMapper.map(departure, DepartureDto.class);
+        departureMessageSender.sendToTopic(departureRequestDto, departureRequest);
+
+        return departureRequestDto;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<DepartureDto> getAllDepartures() {
+    public List<DepartureDto> getAllDeparturesByUserId(Long userId) {
         List<DepartureDto> departureDtoList =
-                StreamSupport.stream(departureRepository.findAll().spliterator(), false)
-                        .map(m -> modelMapper.map(m, DepartureDto.class))
+                departureRepository.findAllByUserId(userId).stream()
+                        .map(m -> {
+                            DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
+                            UserDto userDto = new UserDto();
+                            userDto.setId(m.getNearestUserId());
+                            departureDto.setAddressee(userDto);
+                            return departureDto;
+                        })
+                        .collect(Collectors.toList());
+
+        log.info("Found {} departures", departureDtoList.size());
+        return departureDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DepartureDto> getAllDeparturesByNearestUserId(Long nearestUserId) {
+        List<DepartureDto> departureDtoList =
+                departureRepository.findAllByNearestUserId(nearestUserId).stream()
+                        .map(m -> {
+                            DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
+                            UserDto userDto = new UserDto();
+                            userDto.setId(m.getNearestUserId());
+                            departureDto.setAddressee(userDto);
+                            return departureDto;
+                        })
                         .collect(Collectors.toList());
 
         log.info("Found {} departures", departureDtoList.size());
@@ -129,6 +161,24 @@ public class DepartureServiceImpl implements DepartureService {
         } else {
             log.error("Departure with id = {} not found!", id);
             throw new DepartureNotFoundException(messageService.getMessage("no.such.departure.message", id));
+        }
+    }
+
+    @Transactional
+    @Override
+    public void update(DepartureDto departureDto) {
+        Optional<Departure> departureOptional = departureRepository.findById(departureDto.getId());
+        if (departureOptional.isPresent()) {
+            Departure departure = departureOptional.get();
+            if (departureDto.getAddressee() != null) {
+                departure.setNearestUserId(departureDto.getAddressee().getId());
+            } else {
+                departure.setNearestUserId(null);
+            }
+            departure.setArrivingDate(departureDto.getArrivingDate());
+
+            departure = departureRepository.save(departure);
+            log.info("Updated departure with id = {}", departure.getId());
         }
     }
 }

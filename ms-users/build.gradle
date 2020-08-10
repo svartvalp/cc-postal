@@ -21,5 +21,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.2.RELEASE'
+    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.5.4.RELEASE'
     compile project(":ms-db")
 }

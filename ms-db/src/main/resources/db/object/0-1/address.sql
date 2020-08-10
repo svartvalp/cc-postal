@@ -15,5 +15,3 @@ comment on table postal_schema.address IS 'таблица с адресами';
 comment on column postal_schema.address.latitude IS 'широта';
 comment on column postal_schema.address.longitude IS 'долгота';
 comment on column postal_schema.address.address IS 'адрес';
-
-

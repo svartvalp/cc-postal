@@ -23,7 +23,6 @@ COMMENT ON COLUMN postal_schema.departure.departure_point_id IS 'id точки �
 COMMENT ON COLUMN postal_schema.departure.arriving_point_id IS 'id точки прибытия';
 COMMENT ON COLUMN postal_schema.departure.type IS 'тип посылки';
 COMMENT ON COLUMN postal_schema.departure.departure_date IS 'дата отправления';
-COMMENT ON COLUMN postal_schema.departure.arrived IS 'статус посылки';
 COMMENT ON COLUMN postal_schema.departure.weight IS 'вес посылки';
 COMMENT ON COLUMN postal_schema.departure.arrived IS 'статус посылки (пришла/в пути)';
 COMMENT ON COLUMN postal_schema.departure.description IS 'описание';

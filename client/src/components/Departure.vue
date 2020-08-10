@@ -32,11 +32,13 @@
                             <DepartureInfoCard :paramValue="departure.type" paramName="Тип посылки"/>
                             <DepartureInfoCard :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
                             <DepartureInfoCard :paramValue="departure.description" paramName="Описание посылки"/>
+                            <DepartureInfoCard :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
+                            <DepartureInfoCard v-if="this.recipient!==''" :paramValue="this.recipient" paramName="Получатель"/>
                         </v-row>
                     </v-container>
                 </div>
 
-
+              
             </div>
         </div>
     </div>
@@ -56,6 +58,7 @@
         },
         data() {
             return {
+                recipient:  '',
                 departure: Object,
                 direction: Object,
                 activeColor: "#ffe082",
@@ -94,6 +97,12 @@
         },
         mounted() {
             this.departure = JSON.parse(localStorage.getItem('currentDeparture'))
+            if (this.departure.addressee != null) {
+                this.$http.get('/user/' + this.departure.addressee.id)
+              .then(response => {
+                  this.recipient = response.data.firstName + ' ' + response.data.lastName;
+              })
+            }
             this.fromPoint.center[0] = this.departure.departurePoint.longitude;
             this.fromPoint.center[1] = this.departure.departurePoint.latitude
             this.toPoint.center[0] = this.departure.arrivingPoint.longitude;

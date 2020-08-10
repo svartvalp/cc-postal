@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.gateway.dto.LoginPasswordDto;
-import com.example.gateway.filter.CurruentUserFilter;
+import com.example.gateway.filter.CurrentUserFilter;
 import com.example.gateway.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -135,6 +135,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public Filter currentUserFilter() {
-        return new CurruentUserFilter(tokenStorage());
+        return new CurrentUserFilter(tokenStorage());
     }
 }
