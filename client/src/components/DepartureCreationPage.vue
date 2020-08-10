@@ -154,7 +154,7 @@
                 }
                 console.log(body)
                 this.$http.post('/departure', body).then(() => {
-                    this.$router.push('/')
+                    this.$router.push('/departures')
                 })
             },
             async resetValues() {

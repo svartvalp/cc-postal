@@ -14,9 +14,9 @@ public class DepartureController {
 
     private final DepartureService departureService;
 
-    @GetMapping("/departure/list")
-    public List<DepartureDto> getAllDepartures() {
-        return departureService.getAllDepartures();
+    @GetMapping("/departure/list/{id}")
+    public List<DepartureDto> getAllDepartures(@PathVariable Long id) {
+        return departureService.getAllDeparturesByUserId(id);
     }
 
     @GetMapping("/departure/{id}")
