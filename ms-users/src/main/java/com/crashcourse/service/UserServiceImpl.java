@@ -104,12 +104,14 @@ public class UserServiceImpl implements UserService {
                 throw new BadConvertException(messageService.getMessage("bad.convert.msg"));
             }
             if (userEntity.getAddress() != null) {
-                Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
-                        userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
-                if (address.isPresent()) {
-                    userEntity.setAddress(address.get());
-                } else {
-                    addressRepository.save(userEntity.getAddress());
+                if(!(userEntity.getAddress().getLatitude() == null || userEntity.getAddress().getLongitude() == null || userEntity.getAddress() == null)) {
+                    Optional<AddressEntity> address = addressRepository.findByLongitudeAndLatitude(
+                            userEntity.getAddress().getLongitude(), userEntity.getAddress().getLatitude());
+                    if (address.isPresent()) {
+                        userEntity.setAddress(address.get());
+                    } else {
+                        addressRepository.save(userEntity.getAddress());
+                    }
                 }
             }
             if (userEntity.getPassword() == null) {

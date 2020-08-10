@@ -13,7 +13,7 @@
                     v-if="isAuthenticated"
             />
             <MainPanel
-                    :user="user"
+                    v-bind:user="user"
                     @login="login"
                     @logout="logout"
             />
@@ -73,6 +73,7 @@
                     .then((response) => {
                         this.isAuthenticated = true
                         this.user = response.data
+                        localStorage.setItem('user', JSON.stringify(this.user))
                     })
                     .catch(() => {
                         this.$http.defaults.headers.common['Authorization'] = ''

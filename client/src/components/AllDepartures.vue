@@ -71,9 +71,10 @@
             },
         },
         mounted() {
-            this.$http.get(`/departure/list/${this.user.id}`)
+            this.user = JSON.parse(localStorage.getItem('user'));
+            this.$http.get('/departure/list/' + this.user.id)
                 .then(response => {
-                    this.departures = response.data.filter(item => item.userId === this.user.id)
+                    this.departures = response.data
                     for (let i = 0; i < this.departures.length; ++i) {
                         this.departures[i].departureDate = this.getDate(this.departures[i].departureDate)
                         if (this.departures[i].arrivingDate != null) {

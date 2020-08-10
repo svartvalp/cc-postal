@@ -33,12 +33,12 @@
                             <DepartureInfoCard :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
                             <DepartureInfoCard :paramValue="departure.description" paramName="Описание посылки"/>
                             <DepartureInfoCard :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
-                            <DepartureInfoCard v-if="true" :paramValue="this.recipient" paramName="Получатель"/>
+                            <DepartureInfoCard v-if="this.recipient!==''" :paramValue="this.recipient" paramName="Получатель"/>
                         </v-row>
                     </v-container>
                 </div>
 
-
+              
             </div>
         </div>
     </div>
