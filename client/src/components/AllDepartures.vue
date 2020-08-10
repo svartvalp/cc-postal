@@ -76,6 +76,10 @@
                     this.departures = response.data.filter(item => item.userId === this.user.id)
                     for (let i = 0; i < this.departures.length; ++i) {
                         this.departures[i].departureDate = this.getDate(this.departures[i].departureDate)
+                        if (this.departures[i].arrivingDate != null) {
+                            this.departures[i].arrivingDate = this.getDate(this.departures[i].arrivingDate)
+                        }
+
                     }
                 })
         }

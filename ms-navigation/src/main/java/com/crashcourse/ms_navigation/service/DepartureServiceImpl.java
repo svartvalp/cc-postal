@@ -78,7 +78,7 @@ public class DepartureServiceImpl implements DepartureService {
                 DepartureDto departureDto = modelMapper.map(departure.get(), DepartureDto.class);
                 TreeMap<Double, UserDto> usersMap = new TreeMap<>();
                 userListDto.getUsers().forEach(user -> {
-                    if (!user.getId().equals(departure.get().getUserId())) {
+                    if (!user.getId().equals(departure.get().getUserId()) && user.getAddress() != null) {
                         usersMap.put(Math.sqrt(Math.pow(user.getAddress().getLongitude() - longitude, 2)
                                 + Math.pow(user.getAddress().getLatitude() - latitude, 2)), user);
                     }
