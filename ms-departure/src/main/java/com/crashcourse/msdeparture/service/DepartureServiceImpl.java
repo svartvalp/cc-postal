@@ -110,7 +110,7 @@ public class DepartureServiceImpl implements DepartureService {
                         .map(m -> {
                             DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
                             UserDto userDto = new UserDto();
-                            userDto.setId(m.getUserId());
+                            userDto.setId(m.getNearestUserId());
                             departureDto.setAddressee(userDto);
                             return departureDto;
                         })
@@ -155,11 +155,10 @@ public class DepartureServiceImpl implements DepartureService {
             Departure departure = departureOptional.get();
             if (departureDto.getAddressee() != null) {
                 departure.setNearestUserId(departureDto.getAddressee().getId());
-                departure.setArrivingDate(departureDto.getArrivingDate());
             } else {
                 departure.setNearestUserId(null);
-                departure.setArrivingDate(null);
             }
+            departure.setArrivingDate(departureDto.getArrivingDate());
 
             departure = departureRepository.save(departure);
             log.info("Updated departure with id = {}", departure.getId());
