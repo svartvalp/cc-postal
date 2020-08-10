@@ -23,7 +23,7 @@ ms-navigation - Сервис по геокодингу, определению �
 |APPNAVIGATION_KAFKA_DEPARTURE_COMPUTE_TOPIC  | нет        |   departure_duration_compute                            | топик для получения отправлений           |
 |APPNAVIGATION_KAFKA_DEPARTURE_RESULT_TOPIC   | нет        |   departure_duration_result                             | топик для передачи обновленных отправлений|
 | APPNAVIGATION_KAFKA_USER_LIST_REQUEST_TOPIC | нет        |   user_list_request                                     | топик для передачи запроса пользователей  |
-| APPNAVIGATION_KAFKA_USER_LIST_RESULT_TOPIC  | нет        |   user_list_result                                      | топик для получения списка пользователей  |
+| APPNAVIGATION_KAFKA_USER_LIST_RESULT_TOPIC  | нет        |   user_list_result                                         | топик для получения списка пользователей  |
 
 
 
@@ -41,7 +41,10 @@ ms-users - Сервис по авторизации, получению, и хр
 | APPUSERS_SERVER_PORT              | нет        |    8081                                                 | Порт сервера приложения                    |
 | APPUSERS_DB_SCHEMA_NAME           | нет        |    postal_schema                                        | Стандартная схема базы данных            |
 | APPUSERS_LOGGING_REQUESTS         | нет        |    false                                                | True - логирование всех входящих запросов             |
-
+| APPUSERS_KAFKA_BOOTSTRAP_SERVER   | нет        |    localhost:9092                                       | Хосты серверов Apache Kafka  |
+| APPUSERS_KAFKA_USER_LIST_REQUEST_TOPIC | нет   |    user_list_request                                    | Топик для передачи запроса пользователей|
+| APPUSERS_KAFKA_USER_LIST_RESPONSE_TOPIC | нет  |    user_list_result                                     | Топик для получения списка пользователей |
+| APPUSERS_KAFKA_GROUP_ID           |   нет      |    ms-user                                              | Имя группы слушателей в Apache Kafka |
 
 ms-departure - Сервис по созданию, получению и удалению информации о посылках.
 Переменные среды:
