@@ -4,7 +4,7 @@
                 class="fill-height"
         >
             <v-row>
-                <router-view v-bind:user="user" @login="login" @logout="logout"/>
+                <router-view v-bind:user="user" @login="login" @logout="logout" @update-user="updateUser"/>
             </v-row>
         </v-container>
     </v-main>
@@ -23,6 +23,9 @@
             },
             logout() {
                 this.$emit('logout')
+            },
+            updateUser(user){
+              this.$emit('update-user', user)
             }
         }
     }

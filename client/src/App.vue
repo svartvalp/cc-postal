@@ -16,6 +16,7 @@
                     v-bind:user="user"
                     @login="login"
                     @logout="logout"
+                    @update-user="updateUser"
             />
             <Footer/>
         </v-app>
@@ -63,6 +64,9 @@
                 this.isAuthenticated = true
                 this.user = user
                 localStorage.setItem('user', JSON.stringify(this.user))
+            },
+            updateUser(user){
+              this.user= user
             }
         },
         created() {

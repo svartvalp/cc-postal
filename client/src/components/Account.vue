@@ -250,6 +250,7 @@ export default {
           .then(() => {
             this.userInfoOrig = JSON.parse(JSON.stringify(this.userInfo));
             this.readonly = !this.readonly
+            this.$emit('update-user', this.userInfo)
           })
     },
     submitPassword() {

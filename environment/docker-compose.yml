@@ -81,7 +81,7 @@ services:
     environment:
       POSTGRES_PASSWORD: "admin"
       POSTGRES_USER: "admin"
-      POSRGRES_DB: "postal"
+      POSTRGRES_DB: "postal"
     restart: always
   mongo:
     image: mongo:4.4.0-rc10
