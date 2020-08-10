@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
         if (userDto == null) {
             throw new BadRequestException(messageService.getMessage("bad.request.msg"));
         }
+        if (userDto.getPassword() == null) {
+            throw new BadRequestException(messageService.getMessage("bad.request.msg"));
+        }
         if (userRepository.findByLogin(userDto.getLogin()).isPresent()) {
             throw new AlreadyExistException(messageService.getMessage("already.exists.msg"));
         }
