@@ -3,57 +3,57 @@
     <v-form :readonly="isReadOnly">
       <p class="text-center text-h4">Профиль</p>
       <v-text-field
+          background-color="#FAFAFA"
           class="centered-input"
           label="ID"
-          readonly
           outlined
-          background-color="#FAFAFA"
+          readonly
           v-model="userInfo.id"
       ></v-text-field>
       <v-text-field
+          background-color="#FAFAFA"
           label="Логин"
+          outlined
           readonly
           required
-          outlined
-          background-color="#FAFAFA"
           v-model="userInfo.login"
       ></v-text-field>
       <v-text-field
-          label="Имя"
-          required
-          outlined
           :background-color="fieldBackgroundColor()"
+          label="Имя"
+          outlined
+          required
           v-model="userInfo.firstName"
       ></v-text-field>
       <v-text-field
-          label="Отчество"
-          required
-          outlined
           :background-color="fieldBackgroundColor()"
+          label="Отчество"
+          outlined
+          required
           v-model="userInfo.middleName"
       ></v-text-field>
       <v-text-field
-          label="Фамилия"
-          required
-          outlined
           :background-color="fieldBackgroundColor()"
+          label="Фамилия"
+          outlined
+          required
           v-model="userInfo.lastName"
       ></v-text-field>
       <v-text-field
-          label="Номер паспорта"
-          required
-          filled
-          outlined
           :background-color="fieldBackgroundColor()"
+          filled
+          label="Номер паспорта"
+          outlined
+          required
           v-model="userInfo.passportNumber"
       ></v-text-field>
       <v-text-field
+          :background-color="fieldBackgroundColor()"
+          @click="onAddressFieldClick"
           label="Адрес"
-          required
           outlined
           readonly
-          @click="onAddressFieldClick"
-          :background-color="fieldBackgroundColor()"
+          required
           v-model="userInfo.address.address"
       ></v-text-field>
       <v-btn @click="switchReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
@@ -65,14 +65,14 @@
         <v-btn @click="submitUserInfo">Сохранить</v-btn>
       </div>
     </v-form>
-    <v-dialog max-width="600px" persistent v-model="changePasswordDialog">
+    <v-dialog max-width="600px" persistent v-model="showPasswordDialog">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
             color="primary"
             dark
+            style="margin: 10px"
             v-bind="attrs"
             v-on="on"
-            style="margin: 10px"
         >
           Изменить пароль
         </v-btn>
@@ -83,8 +83,8 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field v-model="newPassword" label="Новый пароль" required type="password"></v-text-field>
-            <v-text-field v-model="newPasswordVerification" label="Повторите" required type="password"></v-text-field>
+            <v-text-field label="Новый пароль" required type="password" v-model="newPassword"></v-text-field>
+            <v-text-field label="Повторите" required type="password" v-model="newPasswordVerification"></v-text-field>
             <v-alert
                 class="mt-6"
                 icon="mdi-alert-octagram"
@@ -109,7 +109,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog max-width="800px" persistent v-model="changeAddressDialog">
+    <v-dialog max-width="800px" persistent v-model="showAddressDialog">
       <v-card>
         <v-card-title>
           <span class="headline">Изменение адреса</span>
@@ -119,24 +119,23 @@
             <div class="map-wrapper">
               <MglMap
                   :accessToken="accessToken"
-                  :center="center"
+                  :center="currentAddress.point"
                   :map-style="mapStyle"
                   @click="onClick"
                   class="map"
                   zoom="9"
               >
-                <MglMarker color="blue" v-bind:coordinates="point.center"/>
+                <MglMarker color="blue" v-bind:coordinates="selectedAddress.point"/>
                 <MglGeojsonLayer :layer="geoJsonLayer" :source="geoJsonSource" layer-id="layer"
                                  source-id="route"/>
               </MglMap>
             </div>
-            <div class="departure-point-text" style="font-weight: bold">Откуда</div>
-            <div class="departure-point-text">{{ point.name }}</div>
+            <div class="departure-point-text text-center">{{ selectedAddress.name }}</div>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="changeAddressDialog = false" color="blue darken-1" text>Закрыть</v-btn>
+          <v-btn @click="showAddressDialog = false" color="blue darken-1" text>Закрыть</v-btn>
           <v-btn @click="onSaveAddress" color="blue darken-1" text>Сохранить</v-btn>
         </v-card-actions>
       </v-card>
@@ -161,11 +160,10 @@ export default {
       accessToken: config.api.accessToken,
       mapStyle: config.api.mapStyle,
       center: config.api.init_values.map_center,
-      point: {
-        center: config.api.init_values.map_center,
-        name: ""
+      selectedAddress: {
+        point: [],
+        name: null
       },
-      selected_point: null,
       type: "",
       weight: 0,
       description: '',
@@ -191,13 +189,15 @@ export default {
           'line-width': 10
         }
       },
-      selectedAddress: "",
-
       userInfo: null,
       userInfoOrig: null,
       isReadOnly: true,
-      changePasswordDialog: false,
-      changeAddressDialog: false,
+      showPasswordDialog: false,
+      showAddressDialog: false,
+      currentAddress: {
+        point: [],
+        name: null
+      },
       newPassword: null,
       newPasswordVerification: null,
       passwordChangeAlert: {
@@ -207,39 +207,38 @@ export default {
     }
   },
   mounted() {
-    this.selected_point = this.point
-    this.$http.get(`/geocoding/point?longitude=${this.point.center[0]}&latitude=${this.point.center[1]}`)
-        .then(response => {
-          this.point.center[0] = response.data.longitude
-          this.point.center[1] = response.data.latitude
-          this.point.name = response.data.placeName
-        });
-
     this.$http.get('/user')
         .then(response => {
           if (!response.data.address) {
             response.data.address = {};
+            this.currentAddress.point = this.center;
+          } else {
+            this.currentAddress.point = [response.data.address.longitude, response.data.address.latitude];
+            this.currentAddress.name = response.data.address.address;
           }
+          this.selectedAddress.point = [this.currentAddress.point[0], this.currentAddress.point[1]];
           this.userInfo = JSON.parse(JSON.stringify(response.data));
           this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
-        });
+        }).then(() =>
+        this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
+            .then(response => {
+              this.selectedAddress.name = response.data.placeName;
+            }));
   },
   methods: {
     updateData() {
-      return this.loadPoint().then(() => {
-        this.loadDirections()
-      }).catch(() => this.geoJsonSource.data.geometry.coordinates = [])
+      return this.loadPoint()
     },
+
     loadPoint() {
-      return this.$http.get(`/geocoding/point?longitude=${this.selected_point.center[0]}&latitude=${this.selected_point.center[1]}`)
+      return this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
           .then(response => {
-            this.point.center[0] = response.data.longitude
-            this.point.center[1] = response.data.latitude
-            this.point.name = response.data.placeName
+            this.selectedAddress.name = response.data.placeName;
           })
     },
+
     onClick(e) {
-      this.selected_point.center = [e.mapboxEvent.lngLat.lng].concat([e.mapboxEvent.lngLat.lat])
+      this.selectedAddress.point = [e.mapboxEvent.lngLat.lng].concat([e.mapboxEvent.lngLat.lat])
       this.updateData()
     },
 
@@ -271,7 +270,7 @@ export default {
       this.userInfo.password = this.newPassword;
       this.$http
           .put(`/user`, this.userInfo)
-      this.changePasswordDialog = false;
+      this.showPasswordDialog = false;
       this.userInfo = this.userInfoOrig;
     },
     fieldBackgroundColor() {
@@ -285,24 +284,24 @@ export default {
       this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig))
     },
     onCancelChangingPasswordClick() {
-      this.changePasswordDialog = false;
+      this.showPasswordDialog = false;
       this.newPassword = '';
       this.newPasswordVerification = '';
       this.passwordChangeAlert.show = false
     },
     onAddressFieldClick() {
       if (!this.isReadOnly) {
-        console.log("inside if")
-        this.changeAddressDialog = true
+        this.showAddressDialog = true
       }
     },
     onSaveAddress() {
       this.userInfo.address = {
-        address: this.point.name,
-        longitude: this.point.center[0],
-        latitude: this.point.center[1]
+        address: this.selectedAddress.name,
+        longitude: this.selectedAddress.point[0],
+        latitude: this.selectedAddress.point[1]
       };
-      this.changeAddressDialog = false;
+      this.showAddressDialog = false;
+      this.currentAddress = this.selectedAddress;
     }
   }
 }

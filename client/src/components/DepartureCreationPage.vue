@@ -187,6 +187,9 @@ export default {
       if(this.weight === 0 || this.weight.trim() === ""){
         this.validationErrors.push('Вес посылки не может быть больше 0')
       }
+      if(this.description.length > 255) {
+        this.validationErrors.push('Описание не может быть длиннее 255 символов')
+      }
     },
     onCreateDeparture() {
       console.log(this.weight)
