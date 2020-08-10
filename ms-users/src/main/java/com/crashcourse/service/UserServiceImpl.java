@@ -88,7 +88,10 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException(messageService.getMessage("bad.request.msg"));
         }
         Optional<UserEntity> optionalUserEntity = userRepository.findByLogin(userDto.getLogin());
-        if (optionalUserEntity.isPresent() && !optionalUserEntity.get().getId().equals(userDto.getId())) {
+        if (optionalUserEntity.isEmpty()) {
+            throw new NoSuchEntityException("no.such.entity.msg");
+        }
+        if (!optionalUserEntity.get().getId().equals(userDto.getId())) {
             throw new AlreadyExistException(messageService.getMessage("already.exists.msg"));
         } else {
             UserEntity userEntity = conversionService.convert(userDto, UserEntity.class);
@@ -104,6 +107,11 @@ public class UserServiceImpl implements UserService {
                     addressRepository.save(userEntity.getAddress());
                 }
             }
+            if (userEntity.getPassword() == null) {
+                userEntity.setPassword(optionalUserEntity.get().getPassword());
+            } else {
+                userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
+            }
             return conversionService.convert(userRepository.save(userEntity), UserDto.class);
         }
     }
@@ -115,6 +123,5 @@ public class UserServiceImpl implements UserService {
                 userEntity.orElseThrow(() -> new NoSuchEntityException("no.such.entity.msg")),
                 UserDto.class
         );
-
     }
 }

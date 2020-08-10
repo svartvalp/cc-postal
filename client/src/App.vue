@@ -53,7 +53,6 @@
                 this.drawerState = !drawerState;
             },
             logout() {
-                console.log('logout')
                 localStorage.clear();
                 this.$http.defaults.headers.common['Authorization'] = '';
                 this.$router.push('/login')
@@ -63,7 +62,6 @@
             login(user) {
                 this.isAuthenticated = true
                 this.user = user
-                console.log(user)
             }
         },
         created() {
