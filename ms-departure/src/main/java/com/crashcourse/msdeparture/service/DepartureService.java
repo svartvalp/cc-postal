@@ -12,4 +12,6 @@ public interface DepartureService {
     DepartureDto getDepartureById(Long id);
 
     void deleteDeparture(Long id);
+
+    void update(DepartureDto departureDto);
 }

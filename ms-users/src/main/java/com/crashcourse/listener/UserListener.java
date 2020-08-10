@@ -23,7 +23,7 @@ public class UserListener {
             containerFactory = "singleFactory"
     )
     public void consume(UserListDto dto) {
-        log.debug("consumed {}", dto);
+        log.info("consumed {}", dto);
         userKafkaService.sendUserData(dto, userToNavigation);
     }
 }

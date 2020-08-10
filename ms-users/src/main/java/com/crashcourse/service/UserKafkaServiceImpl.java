@@ -15,7 +15,7 @@ public class UserKafkaServiceImpl implements UserKafkaService {
 
     public void sendUserData(UserListDto dto, String topic) {
         dto.setUsers(userService.getAllUsers());
-        log.debug("send => {}", dto);
+        log.info("send => {}", dto);
         kafkaUserTemplate.send(topic, dto);
     }
 }

@@ -10,6 +10,7 @@ import com.crashcourse.msdeparture.repository.DepartureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,10 @@ public class DepartureServiceImpl implements DepartureService {
     private final AddressRepository addressRepository;
     private final ModelMapper modelMapper;
     private final MessageService messageService;
+    private final DepartureMessageSender departureMessageSender;
+
+    @Value("${kafka.topic.departure.compute}")
+    private String departureRequest;
 
     @Transactional
     @Override
@@ -90,7 +95,10 @@ public class DepartureServiceImpl implements DepartureService {
         departure = departureRepository.save(departure);
         log.info("Create departure with id = {}", departure.getId());
 
-        return modelMapper.map(departure, DepartureDto.class);
+        DepartureDto newDeparture = modelMapper.map(departure, DepartureDto.class);
+        departureMessageSender.sendToTopic(newDeparture, departureRequest);
+
+        return newDeparture;
     }
 
     @Transactional(readOnly = true)
@@ -129,6 +137,20 @@ public class DepartureServiceImpl implements DepartureService {
         } else {
             log.error("Departure with id = {} not found!", id);
             throw new DepartureNotFoundException(messageService.getMessage("no.such.departure.message", id));
+        }
+    }
+
+    @Transactional
+    @Override
+    public void update(DepartureDto departureDto) {
+        Optional<Departure> departureOptional = departureRepository.findById(departureDto.getId());
+        if (departureOptional.isPresent()) {
+            Departure departure = departureOptional.get();
+            departure.setArrivingDate(departureDto.getArrivingDate());
+            departure.setNearestUserId(departureDto.getAddressee().getId());
+
+            departure = departureRepository.save(departure);
+            log.info("Updated departure with id = {}", departure.getId());
         }
     }
 }

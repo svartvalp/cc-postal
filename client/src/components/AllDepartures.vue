@@ -72,7 +72,7 @@
         },
         mounted() {
             this.user = {
-                id: 1
+                id: 5
             }
             this.$http.get('/departure/list')
                 .then(response => {

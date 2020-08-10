@@ -10,3 +10,13 @@ spring:
     generate-ddl: true
 server:
   port: ${APPDEPARTURE_SERVER_PORT:8083}
+
+kafka:
+  bootstrap:
+    server: ${APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+  topic:
+    departure:
+      compute: ${APPDEPARTURE_KAFKA_DEPARTURE_COMPUTE_TOPIC:departure_duration_compute}
+      result: ${APPDEPARTURE_KAFKA_DEPARTURE_RESULT_TOPIC:departure_duration_result}
+  group_id: ${APPDEPARTURE_APPNAVIGATION_KAFKA_GROUP_ID:ms_departure}
+
