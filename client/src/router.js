@@ -4,6 +4,9 @@ import DepartureCreationPage from "@/components/DepartureCreationPage";
 import AllDepartures from "@/components/AllDepartures";
 import Departure from "@/components/Departure";
 import Account from "@/components/Account";
+import Login from "@/components/Login";
+import Greeting from "@/components/Greeting"
+import Register from "@/components/Register";
 
 Vue.use(Router)
 
@@ -12,31 +15,31 @@ let router = new Router({
     routes: [
         {
             path: '/',
-            component: () => import('./components/Greeting'),
+            component: Greeting
         },
         {
             path: '/departure/create',
-            component: DepartureCreationPage,
+            component: DepartureCreationPage
         },
         {
             path: '/user',
-            component: Account,
+            component: Account
         },
         {
             path: '/departures',
-            component: AllDepartures,
+            component: AllDepartures
         },
         {
             path: '/departure',
-            component: Departure,
+            component: Departure
         },
         {
             path: '/login',
-            component: () => import('./components/Login'),
+            component: Login
         },
         {
             path: '/register',
-            component: () => import('./components/Register'),
+            component: Register,
         }
     ]
 })

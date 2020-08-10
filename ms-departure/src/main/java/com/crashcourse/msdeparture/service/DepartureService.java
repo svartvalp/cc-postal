@@ -9,6 +9,8 @@ public interface DepartureService {
 
     List<DepartureDto> getAllDeparturesByUserId(Long id);
 
+    List<DepartureDto> getAllDeparturesByNearestUserId(Long nearestUserId);
+
     DepartureDto getDepartureById(Long id);
 
     void deleteDeparture(Long id);

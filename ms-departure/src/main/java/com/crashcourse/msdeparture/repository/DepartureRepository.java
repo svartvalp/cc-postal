@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface DepartureRepository extends CrudRepository<Departure, Long> {
 
-    List<Departure> findAllByUserId(Long id);
+    List<Departure> findAllByUserId(Long userId);
+
+    List<Departure> findAllByNearestUser(Long nearestUserId);
 }
