@@ -3,7 +3,7 @@ package com.example.gateway.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.example.gateway.dto.LoginUserDto;
+import com.example.gateway.dto.LoginPasswordDto;
 import com.example.gateway.filter.CurruentUserFilter;
 import com.example.gateway.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,7 +33,6 @@ import java.util.TreeSet;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -71,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() {
         UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
         filter.setAuthenticationManager(authentication -> {
-            LoginUserDto userDto = new LoginUserDto();
+            LoginPasswordDto userDto = new LoginPasswordDto();
             userDto.setLogin((String) authentication.getPrincipal());
             userDto.setPassword((String) authentication.getCredentials());
             String userJson;
