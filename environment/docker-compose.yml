@@ -19,6 +19,7 @@ services:
     environment:
       APPNAVIGATION_API_ACCESS_TOKEN: pk.eyJ1Ijoic3ZhcnR2YWxwIiwiYSI6ImNrZDhqNm1leTB1bmoycXNjOGpvcmpubDcifQ.8a3iefrMWmydU-1bk8gLUQ
       APPNAVIGATION_DB_HOST: mongo
+      APPNAVIGATION_KAFKA_BOOTSTRAP_SERVER: kafka:9093
     ports:
       - '8082:8082'
     depends_on:
@@ -34,10 +35,13 @@ services:
     environment:
       APPUSERS_DB_HOST: postgres
       APPUSERS_LOGGING_REQUESTS: "true"
+      APPUSERS_KAFKA_BOOTSTRAP_SERVER: kafka:9093
     ports:
     - '8081:8081'
     depends_on:
       - postgres
+      - zookeeper
+      - kafka
   crashcourse-ms-departure:
     image: crashcourse-ms-departure
     build:
@@ -45,10 +49,13 @@ services:
       dockerfile: ./ms-departure/Dockerfile
     environment:
       APPDEPARTURE_DB_HOST: postgres
+      APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER: kafka:9093
     ports:
     - '8083:8083'
     depends_on:
       - postgres
+      - zookeeper
+      - kafka
   crashcourse-ms-gateway:
     image: crashcourse-ms-gateway
     build:
@@ -101,5 +108,6 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     links:
       - zookeeper
