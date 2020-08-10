@@ -49,15 +49,20 @@ ms-users - Сервис по авторизации, получению, и хр
 ms-departure - Сервис по созданию, получению и удалению информации о посылках.
 Переменные среды:
 
-| Название переменной               | Необходима | Значение по умолчанию                                   |Описание                                   |
-| ----------------------------------|------------|---------------------------------------------------------|-------------------------------------------|
-| APPDEPARTURE_DB_NAME              | нет        |    postal                                               | Имя базы данных                           | 
-| APPDEPARTURE_DB_USERNAME          | нет        |    admin                                                | Пользователь базы данных                  |
-| APPDEPARTURE_DB_PASSWORD          | нет        |    admin                                                | Пароль для пользователя базы данных       |
-| APPDEPARTURE_DB_HOST              | нет        |    localhost                                            | Хост сервера базы данных                  |
-| APPDEPARTURE_DB_PORT              | нет        |    5432                                                 | Порт сервера базы данных                  | 
-| APPDEPARTURE_SERVER_PORT          | нет        |    8083                                                 | Порт сервера приложения                   |
-| APPDEPARTURE_DB_SCHEMA_NAME       | нет        |    postal_schema                                        | Стандартная схема базы данных             |
+| Название переменной                         | Необходима | Значение по умолчанию                                   |Описание                                     |
+| --------------------------------------------|------------|---------------------------------------------------------|---------------------------------------------|
+| APPDEPARTURE_DB_NAME                        | нет        |    postal                                               | Имя базы данных                             | 
+| APPDEPARTURE_DB_USERNAME                    | нет        |    admin                                                | Пользователь базы данных                    |
+| APPDEPARTURE_DB_PASSWORD                    | нет        |    admin                                                | Пароль для пользователя базы данных         |
+| APPDEPARTURE_DB_HOST                        | нет        |    localhost                                            | Хост сервера базы данных                    |
+| APPDEPARTURE_DB_PORT                        | нет        |    5432                                                 | Порт сервера базы данных                    | 
+| APPDEPARTURE_SERVER_PORT                    | нет        |    8083                                                 | Порт сервера приложения                     |
+| APPDEPARTURE_DB_SCHEMA_NAME                 | нет        |    postal_schema                                        | Стандартная схема базы данных               |
+| APPDEPARTURE_KAFKA_GROUP_ID                 | нет        |    ms_departure                                         | Имя группы слушателей в Apache Kafka        |
+| APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER         | нет        |    localhost:9092                                       | Хосты серверов Apache Kafka                 |
+| APPDEPARTURE_KAFKA_DEPARTURE_COMPUTE_TOPIC  | нет        |    departure_duration_compute                           | Топик для передачи отправлений              |
+| APPDEPARTURE_KAFKA_DEPARTURE_RESULT_TOPIC   | нет        |    departure_duration_result                            | Топик для получения обновлённых отправлений |
+
 
 
 ms-gateway - Сервис, который перенаправляет запросы клиентов на нужные сервисы. Также отвечает за авторизацию и аутентификацию.

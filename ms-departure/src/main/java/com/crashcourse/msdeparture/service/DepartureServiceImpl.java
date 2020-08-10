@@ -2,6 +2,7 @@ package com.crashcourse.msdeparture.service;
 
 import com.crashcourse.msdeparture.dto.AddressDto;
 import com.crashcourse.msdeparture.dto.DepartureDto;
+import com.crashcourse.msdeparture.dto.UserDto;
 import com.crashcourse.msdeparture.entity.Address;
 import com.crashcourse.msdeparture.entity.Departure;
 import com.crashcourse.msdeparture.exception.DepartureNotFoundException;
@@ -103,10 +104,16 @@ public class DepartureServiceImpl implements DepartureService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<DepartureDto> getAllDepartures() {
+    public List<DepartureDto> getAllDeparturesByUserId(Long id) {
         List<DepartureDto> departureDtoList =
-                StreamSupport.stream(departureRepository.findAll().spliterator(), false)
-                        .map(m -> modelMapper.map(m, DepartureDto.class))
+                departureRepository.findAllByUserId(id).stream()
+                        .map(m -> {
+                            DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
+                            UserDto userDto = new UserDto();
+                            userDto.setId(m.getUserId());
+                            departureDto.setAddressee(userDto);
+                            return departureDto;
+                        })
                         .collect(Collectors.toList());
 
         log.info("Found {} departures", departureDtoList.size());
@@ -146,8 +153,13 @@ public class DepartureServiceImpl implements DepartureService {
         Optional<Departure> departureOptional = departureRepository.findById(departureDto.getId());
         if (departureOptional.isPresent()) {
             Departure departure = departureOptional.get();
-            departure.setArrivingDate(departureDto.getArrivingDate());
-            departure.setNearestUserId(departureDto.getAddressee().getId());
+            if (departureDto.getAddressee() != null) {
+                departure.setNearestUserId(departureDto.getAddressee().getId());
+                departure.setArrivingDate(departureDto.getArrivingDate());
+            } else {
+                departure.setNearestUserId(null);
+                departure.setArrivingDate(null);
+            }
 
             departure = departureRepository.save(departure);
             log.info("Updated departure with id = {}", departure.getId());

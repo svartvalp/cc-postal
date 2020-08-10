@@ -12,7 +12,7 @@ let router = new Router({
     routes: [
         {
             path: '/',
-            component: AllDepartures,
+            component: () => import('./components/Greeting'),
         },
         {
             path: '/departure/create',

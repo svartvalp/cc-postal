@@ -28,15 +28,6 @@
                             <v-card-text>
                                 <form>
                                     <v-text-field
-                                            :error-messages="nameErrors"
-                                            @blur="$v.firstName.$touch()"
-                                            @input="$v.firstName.$touch()"
-                                            color="black"
-                                            label="Имя"
-                                            required
-                                            v-model="firstName"
-                                    ></v-text-field>
-                                    <v-text-field
                                             :error-messages="middleNameErrors"
                                             @blur="$v.middleName.$touch()"
                                             @input="$v.middleName.$touch()"
@@ -44,6 +35,15 @@
                                             label="Фамилия"
                                             required
                                             v-model="middleName"
+                                    ></v-text-field>
+                                    <v-text-field
+                                            :error-messages="nameErrors"
+                                            @blur="$v.firstName.$touch()"
+                                            @input="$v.firstName.$touch()"
+                                            color="black"
+                                            label="Имя"
+                                            required
+                                            v-model="firstName"
                                     ></v-text-field>
                                     <v-text-field
                                             :error-messages="lastNameErrors"
