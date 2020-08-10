@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
-public class CurruentUserFilter implements Filter {
+public class CurrentUserFilter implements Filter {
     private final Set<String> tokenStorage;
     @Value("${zuul.routes.user.url}")
     private String usersServiceUrl;
 
-    public CurruentUserFilter(Set<String> tokens) {
+    public CurrentUserFilter(Set<String> tokens) {
         this.tokenStorage = tokens;
     }
 
