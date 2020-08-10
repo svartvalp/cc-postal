@@ -50,9 +50,10 @@
       <v-text-field
           label="Адрес"
           required
-          readonly
           outlined
-          background-color='#FAFAFA'
+          readonly
+          @click="onAddressFieldClick"
+          :background-color="fieldBackgroundColor()"
           v-model="userInfo.address.address"
       ></v-text-field>
       <v-btn @click="switchReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
@@ -64,7 +65,7 @@
         <v-btn @click="submitUserInfo">Сохранить</v-btn>
       </div>
     </v-form>
-    <v-dialog max-width="600px" persistent v-model="dialog">
+    <v-dialog max-width="600px" persistent v-model="changePasswordDialog">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
             color="primary"
@@ -107,19 +108,96 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog max-width="800px" persistent v-model="changeAddressDialog">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Изменение адреса</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <div class="map-wrapper">
+              <MglMap
+                  :accessToken="accessToken"
+                  :center="center"
+                  :map-style="mapStyle"
+                  @click="onClick"
+                  class="map"
+                  zoom="9"
+              >
+                <MglMarker color="blue" v-bind:coordinates="point.center"/>
+                <MglGeojsonLayer :layer="geoJsonLayer" :source="geoJsonSource" layer-id="layer"
+                                 source-id="route"/>
+              </MglMap>
+            </div>
+            <div class="departure-point-text" style="font-weight: bold">Откуда</div>
+            <div class="departure-point-text">{{ point.name }}</div>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="changeAddressDialog = false" color="blue darken-1" text>Закрыть</v-btn>
+          <v-btn @click="onSaveAddress" color="blue darken-1" text>Сохранить</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import {MglGeojsonLayer, MglMap, MglMarker} from "vue-mapbox";
+import config from "../../config";
 
 export default {
   name: "Account",
+  components: {
+    MglMap,
+    MglMarker,
+    MglGeojsonLayer
+  },
   data() {
     return {
+      activeColor: "#ffe082",
+      accessToken: config.api.accessToken,
+      mapStyle: config.api.mapStyle,
+      center: config.api.init_values.map_center,
+      point: {
+        center: config.api.init_values.map_center,
+        name: ""
+      },
+      selected_point: null,
+      type: "",
+      weight: 0,
+      description: '',
+      geoJsonSource: {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': []
+          }
+        }
+      },
+      geoJsonLayer: {
+        'type': 'line',
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#363636',
+          'line-width': 10
+        }
+      },
+      selectedAddress: "",
+
       userInfo: null,
       userInfoOrig: null,
       isReadOnly: true,
-      dialog: false,
+      changePasswordDialog: false,
+      changeAddressDialog: false,
       newPassword: null,
       newPasswordVerification: null,
       passwordChangeAlert: {
@@ -129,20 +207,46 @@ export default {
     }
   },
   mounted() {
+    this.selected_point = this.point
+    this.$http.get(`/geocoding/point?longitude=${this.point.center[0]}&latitude=${this.point.center[1]}`)
+        .then(response => {
+          this.point.center[0] = response.data.longitude
+          this.point.center[1] = response.data.latitude
+          this.point.name = response.data.placeName
+        });
+
     this.$http.get('/user')
         .then(response => {
           if (!response.data.address) {
             response.data.address = {};
           }
-          this.userInfo = response.data;
+          this.userInfo = JSON.parse(JSON.stringify(response.data));
           this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
         });
   },
   methods: {
+    updateData() {
+      return this.loadPoint().then(() => {
+        this.loadDirections()
+      }).catch(() => this.geoJsonSource.data.geometry.coordinates = [])
+    },
+    loadPoint() {
+      return this.$http.get(`/geocoding/point?longitude=${this.selected_point.center[0]}&latitude=${this.selected_point.center[1]}`)
+          .then(response => {
+            this.point.center[0] = response.data.longitude
+            this.point.center[1] = response.data.latitude
+            this.point.name = response.data.placeName
+          })
+    },
+    onClick(e) {
+      this.selected_point.center = [e.mapboxEvent.lngLat.lng].concat([e.mapboxEvent.lngLat.lat])
+      this.updateData()
+    },
+
     submitUserInfo() {
       this.switchReadOnly();
       this.$http
-          .put(`/user`, JSON.parse(JSON.stringify(this.userInfo)))
+          .put(`/user`, this.userInfo)
           .then(() => {
             this.userInfoOrig = JSON.parse(JSON.stringify(this.userInfo));
             this.readonly = !this.readonly
@@ -166,7 +270,7 @@ export default {
       this.userInfo.password = this.newPassword;
       this.$http
           .put(`/user`, this.userInfo)
-      this.dialog = false;
+      this.changePasswordDialog = false;
       this.userInfo = this.userInfoOrig;
     },
     fieldBackgroundColor() {
@@ -180,10 +284,24 @@ export default {
       this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig))
     },
     onCancelChangingPasswordClick() {
-      this.dialog = false;
+      this.changePasswordDialog = false;
       this.newPassword = '';
       this.newPasswordVerification = '';
       this.passwordChangeAlert.show = false
+    },
+    onAddressFieldClick() {
+      if (!this.isReadOnly) {
+        console.log("inside if")
+        this.changeAddressDialog = true
+      }
+    },
+    onSaveAddress() {
+      this.userInfo.address = {
+        address: this.point.name,
+        longitude: this.point.center[0],
+        latitude: this.point.center[1]
+      };
+      this.changeAddressDialog = false;
     }
   }
 }

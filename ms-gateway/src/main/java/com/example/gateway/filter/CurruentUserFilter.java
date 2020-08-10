@@ -27,7 +27,7 @@ public class CurruentUserFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponseRequest = (HttpServletResponse) response;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String uri = httpServletRequest.getRequestURI();
         String token = httpServletRequest.getHeader("Authorization");
         String method = httpServletRequest.getMethod();
@@ -38,7 +38,9 @@ public class CurruentUserFilter implements Filter {
                 ResponseEntity<UserDto> responseEntity = new RestTemplate().getForEntity(usersServiceUrl + "/user?login=" + login, UserDto.class);
                 ObjectMapper mapper = new ObjectMapper();
                 String userJson = mapper.writeValueAsString(responseEntity.getBody());
-                httpResponseRequest.getWriter().println(userJson);
+                httpServletResponse.setContentType("application/json");
+                httpServletResponse.setCharacterEncoding("UTF-8");
+                httpServletResponse.getWriter().println(userJson);
             }
         } else {
             chain.doFilter(request, response);
