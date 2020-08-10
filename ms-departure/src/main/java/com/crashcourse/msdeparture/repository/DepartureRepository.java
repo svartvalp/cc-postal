@@ -9,5 +9,5 @@ public interface DepartureRepository extends CrudRepository<Departure, Long> {
 
     List<Departure> findAllByUserId(Long userId);
 
-    List<Departure> findAllByNearestUser(Long nearestUserId);
+    List<Departure> findAllByNearestUserId(Long nearestUserId);
 }

@@ -34,7 +34,7 @@
           </button>
           <div class="type-input-container">
             <div class="validation-errors" v-if="validationErrors.length">
-              <div v-for="error of this.validationErrors" :key="error" class="validation-error">{{error}}</div>
+              <div v-for="error of this.validationErrors" :key="error" class="validation-error">{{ error }}</div>
             </div>
             <label for="type">Тип посылки</label>
             <input id="type" name="type" type="text" v-model="type" class="type-input-text">
@@ -66,17 +66,17 @@ export default {
       mapStyle: config.api.mapStyle,
       center: config.api.init_values.map_center,
       fromPoint: {
-        center: config.api.init_values.from_point,
+        center: [].concat(config.api.init_values.from_point),
         name: ""
       },
       toPoint: {
-        center: config.api.init_values.to_point,
+        center: [].concat(config.api.init_values.to_point),
         name: ""
       },
       selectedPoint: null,
       type: "",
       weight: 0,
-      validationErrors : [],
+      validationErrors: [],
       description: '',
       geoJsonSource: {
         'type': 'geojson',
@@ -181,17 +181,26 @@ export default {
     },
     checkValidation() {
       this.validationErrors = []
-      if(!this.type.trim().length) {
+      if (!this.type.trim().length) {
         this.validationErrors.push('Тип посылки не указан')
       }
-      if(this.weight === 0 || this.weight.trim() === ""){
-        this.validationErrors.push('Вес посылки не может быть больше 0')
+      if (this.weight === 0 || this.weight.trim() === "") {
+        this.validationErrors.push('Вес посылки не может быть меньше 0')
+      }
+      if (this.description.length > 255) {
+        this.validationErrors.push('Описание не может быть длиннее 255 символов')
+      }
+      if (this.type.length > 20) {
+        this.validationErrors.push('Название типа не может быть больше 20 символов')
+      }
+      if (this.weight > 10000) {
+        this.validationErrors.push('Вес не может быть больше 10 кг')
       }
     },
     onCreateDeparture() {
       console.log(this.weight)
       this.checkValidation()
-      if(this.validationErrors.length)
+      if (this.validationErrors.length)
         return
       let body = {
         userId: this.user.id,
@@ -343,10 +352,12 @@ export default {
 .bottom-button:focus {
   outline: none;
 }
+
 .validation-errors {
   align-self: center;
   margin-bottom: 10px;
 }
+
 .validation-error {
   font-size: 12pt;
   color: red;

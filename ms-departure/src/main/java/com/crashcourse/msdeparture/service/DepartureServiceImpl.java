@@ -109,7 +109,7 @@ public class DepartureServiceImpl implements DepartureService {
                         .map(m -> {
                             DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
                             UserDto userDto = new UserDto();
-                            userDto.setId(m.getNearestUser());
+                            userDto.setId(m.getNearestUserId());
                             departureDto.setAddressee(userDto);
                             return departureDto;
                         })
@@ -123,11 +123,11 @@ public class DepartureServiceImpl implements DepartureService {
     @Override
     public List<DepartureDto> getAllDeparturesByNearestUserId(Long nearestUserId) {
         List<DepartureDto> departureDtoList =
-                departureRepository.findAllByNearestUser(nearestUserId).stream()
+                departureRepository.findAllByNearestUserId(nearestUserId).stream()
                         .map(m -> {
                             DepartureDto departureDto = modelMapper.map(m, DepartureDto.class);
                             UserDto userDto = new UserDto();
-                            userDto.setId(m.getNearestUser());
+                            userDto.setId(m.getNearestUserId());
                             departureDto.setAddressee(userDto);
                             return departureDto;
                         })
@@ -171,9 +171,9 @@ public class DepartureServiceImpl implements DepartureService {
         if (departureOptional.isPresent()) {
             Departure departure = departureOptional.get();
             if (departureDto.getAddressee() != null) {
-                departure.setNearestUser(departureDto.getAddressee().getId());
+                departure.setNearestUserId(departureDto.getAddressee().getId());
             } else {
-                departure.setNearestUser(null);
+                departure.setNearestUserId(null);
             }
             departure.setArrivingDate(departureDto.getArrivingDate());
 

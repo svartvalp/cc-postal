@@ -23,7 +23,7 @@ public class Departure {
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "nearest_user_id")
-    private Long nearestUser;
+    private Long nearestUserId;
     @ManyToOne
     @JoinColumn(name = "departure_point_id")
     private Address departurePoint;
