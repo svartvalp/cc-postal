@@ -8,7 +8,7 @@ services:
     environment:
       HOST: crashcourse-ms-gateway
     ports:
-    - '8085:80'
+      - '8085:80'
     depends_on:
       - crashcourse-ms-gateway
   crashcourse-ms-navigation:
@@ -26,7 +26,7 @@ services:
       - zookeeper
       - kafka
       - mongo
-
+    restart: always
   crashcourse-ms-users:
     image: crashcourse-ms-users
     build:
@@ -37,11 +37,12 @@ services:
       APPUSERS_LOGGING_REQUESTS: "true"
       APPUSERS_KAFKA_BOOTSTRAP_SERVER: kafka:9093
     ports:
-    - '8081:8081'
+      - '8081:8081'
     depends_on:
       - postgres
       - zookeeper
       - kafka
+    restart: always
   crashcourse-ms-departure:
     image: crashcourse-ms-departure
     build:
@@ -51,18 +52,19 @@ services:
       APPDEPARTURE_DB_HOST: postgres
       APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER: kafka:9093
     ports:
-    - '8083:8083'
+      - '8083:8083'
     depends_on:
       - postgres
       - zookeeper
       - kafka
+    restart: always
   crashcourse-ms-gateway:
     image: crashcourse-ms-gateway
     build:
       context: ..
       dockerfile: ./ms-gateway/Dockerfile
     ports:
-    - '8080:8080'
+      - '8080:8080'
     environment:
       APPGATEWAY_USERS_SERVICE_URL: http://crashcourse-ms-users:8081/
       APPGATEWAY_NAVIGATION_SERVICE_URL: http://crashcourse-ms-navigation:8082/
