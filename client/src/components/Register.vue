@@ -61,7 +61,8 @@
                                             color="black"
                                             label="Логин"
                                             required
-                                            v-model="login"
+                                            v-model.trim="login"
+                                            @keypress="weightKeyPressed"
                                     ></v-text-field>
                                     <v-text-field
                                             :counter="10"
@@ -72,6 +73,7 @@
                                             label="Серия и номер паспорта"
                                             required
                                             v-model="passportNumber"
+                                            v-mask="'##########'"
                                     ></v-text-field>
                                     <v-text-field
                                             :error-messages="passwordErrors"
@@ -111,7 +113,7 @@
 
 <script>
     import {validationMixin} from 'vuelidate'
-    import {maxLength, minLength, required} from 'vuelidate/lib/validators'
+    import {minLength, required} from 'vuelidate/lib/validators'
 
     export default {
         mixins: [validationMixin],
@@ -121,13 +123,8 @@
             middleName: {required},
             lastName: {required},
             login: {required},
-            passportNumber: {required, minLength: minLength(10), maxLength: maxLength(10)},
-            password: {required},
-            checkbox: {
-                checked(val) {
-                    return val
-                },
-            },
+            passportNumber: {required, minLength: minLength(10)},
+            password: {required}
         },
         data: () => ({
             firstName: '',
@@ -136,7 +133,6 @@
             login: '',
             passportNumber: '',
             password: '',
-            checkbox: false,
             user: {},
             alert: {
                 show: false,
@@ -211,16 +207,14 @@
                 this.login = ''
                 this.passportNumber = ''
                 this.password = ''
-                this.checkbox = false
             },
+            weightKeyPressed(e) {
+                if(!/\w/.test(e.key)){
+                    e.preventDefault()
+                }
+            }
         },
         computed: {
-            checkboxErrors() {
-                const error = []
-                if (!this.$v.checkbox.$dirty) return error
-                !this.$v.checkbox.checked && error.push('Вы должны быть согласны, чтобы продолжить!')
-                return error
-            },
             nameErrors() {
                 const error = []
                 if (!this.$v.firstName.$dirty) return error
@@ -248,7 +242,6 @@
             passportNumberErrors() {
                 const error = []
                 if (!this.$v.passportNumber.$dirty) return error
-                !this.$v.passportNumber.maxLength && error.push('Серия и номер паспорта должны состоять из 10 символов')
                 !this.$v.passportNumber.minLength && error.push('Серия и номер паспорта должны состоять из 10 символов')
                 !this.$v.passportNumber.required && error.push('Это поле обязательно для заполнения.')
                 return error
