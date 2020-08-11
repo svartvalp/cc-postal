@@ -19,7 +19,7 @@ ms-navigation - Сервис по геокодингу, определению �
 | APPNAVIGATION_DB_PORT                       | нет        |    27017                                                |Порт сервера базы данных Mongodb                  | 
 | APPNAVIGATION_AUTO_INDEX_CREATION           | нет        |     true                                                | Автоматическое создание индексов базы данных Mongodb          |
 | APPNAVIGATION_SERVER_PORT                   | нет        |    8082                                                 |Порт сервера приложения                    |
-| APPNAVIGATION_DIRECTIONS_API                | нет        |    https://api.mapbox.com/directions/v5/mapbox/driving/ ps://api.mapbox.com/directions/v5/mapbox/driving/ | URL от API для получения пути             |
+| APPNAVIGATION_DIRECTIONS_API                | нет        |    https://api.mapbox.com/directions/v5/mapbox/driving/  | URL от API для получения пути             |
 | APPNAVIGATION_GEOCODING_API                 | нет        |    https://api.mapbox.com/geocoding/v5/mapbox.places/   | URL от API для геокодирования             |
 | APPNAVIGATION_API_ACCESS_TOKEN              | да         |   _                                                     | Токен для API                             |
 | APPNAVIGATION_DB_HOST                       | нет        |   localhost                                             | Хост базы данных                          |
