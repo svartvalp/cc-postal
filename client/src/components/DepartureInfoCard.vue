@@ -20,7 +20,6 @@
             },
             paramValue: {
                 type: String,
-                required: true
             }
         }
     }

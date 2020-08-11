@@ -112,6 +112,8 @@ public class UserServiceImpl implements UserService {
                     } else {
                         addressRepository.save(userEntity.getAddress());
                     }
+                } else {
+                    userEntity.setAddress(null);
                 }
             }
             if (userEntity.getPassword() == null) {

@@ -11,7 +11,7 @@
               :center="center"
               :map-style="mapStyle"
               class="map"
-              zoom="9"
+              :zoom="zoom"
           >
             <MglMarker color="blue" v-bind:coordinates="fromPoint.center"/>
             <MglMarker :coordinates="toPoint.center" color="blue"/>
@@ -30,7 +30,7 @@
                                  paramName="Адрес получения"/>
               <DepartureInfoCard :paramValue="departure.departureDate" paramName="Дата отправки"/>
               <DepartureInfoCard :paramValue="departure.type" paramName="Тип посылки"/>
-              <DepartureInfoCard :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
+              <DepartureInfoCard :paramValue="departure.weight.toString()" paramName="Вес посылки (в граммах)"/>
               <DepartureInfoCard :paramValue="departure.description" paramName="Описание посылки"/>
               <DepartureInfoCard :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
               <DepartureInfoCard v-if="recipient!==''" :paramValue="recipient" paramName="Получатель"/>
@@ -59,9 +59,22 @@ export default {
   },
   data() {
     return {
+      zoom: 9,
       recipient: '',
       sender: '',
-      departure: Object,
+      departure: {
+        id: '',
+        userId: '',
+        departurePoint: {},
+        arrivingPoint: {},
+        type: '',
+        arrived: false,
+        weight: 0,
+        description: '',
+        departureDate: null,
+        arrivingDate: null,
+        addressee: {},
+      },
       direction: Object,
       activeColor: "#ffe082",
       accessToken: config.api.accessToken,
@@ -99,7 +112,6 @@ export default {
   },
   mounted() {
     this.departure = JSON.parse(localStorage.getItem('currentDeparture'))
-    console.log(this.departure.isReceived)
     if (this.departure.isReceived) {
       this.$http.get('/user/' + this.departure.userId)
           .then(response => {
