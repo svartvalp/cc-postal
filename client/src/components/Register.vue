@@ -28,6 +28,8 @@
                             <v-card-text>
                                 <form>
                                     <v-text-field
+                                            maxlength="50"
+                                            :counter="50"
                                             :error-messages="middleNameErrors"
                                             @blur="$v.middleName.$touch()"
                                             @input="$v.middleName.$touch()"
@@ -35,8 +37,11 @@
                                             label="Фамилия"
                                             required
                                             v-model="middleName"
+
                                     ></v-text-field>
                                     <v-text-field
+                                            maxlength="50"
+                                            :counter="50"
                                             :error-messages="nameErrors"
                                             @blur="$v.firstName.$touch()"
                                             @input="$v.firstName.$touch()"
@@ -46,6 +51,8 @@
                                             v-model="firstName"
                                     ></v-text-field>
                                     <v-text-field
+                                            maxlength="50"
+                                            :counter="50"
                                             :error-messages="lastNameErrors"
                                             @blur="$v.lastName.$touch()"
                                             @input="$v.lastName.$touch()"
@@ -55,6 +62,8 @@
                                             v-model="lastName"
                                     ></v-text-field>
                                     <v-text-field
+                                            maxlength="10"
+                                            :counter="10"
                                             :error-messages="loginErrors"
                                             @blur="$v.login.$touch()"
                                             @input="$v.login.$touch()"
@@ -62,9 +71,10 @@
                                             label="Логин"
                                             required
                                             v-model.trim="login"
-                                            @keypress="weightKeyPressed"
+                                            @keypress="loginKeyPressed"
                                     ></v-text-field>
                                     <v-text-field
+                                            maxlength="10"
                                             :counter="10"
                                             :error-messages="passportNumberErrors"
                                             @blur="$v.passportNumber.$touch()"
@@ -76,6 +86,8 @@
                                             v-mask="'##########'"
                                     ></v-text-field>
                                     <v-text-field
+                                            maxlength="30"
+                                            :counter="30"
                                             :error-messages="passwordErrors"
                                             @blur="$v.password.$touch()"
                                             @input="$v.password.$touch()"
@@ -113,18 +125,18 @@
 
 <script>
     import {validationMixin} from 'vuelidate'
-    import {minLength, required} from 'vuelidate/lib/validators'
+    import {minLength, maxLength, required} from 'vuelidate/lib/validators'
 
     export default {
         mixins: [validationMixin],
 
         validations: {
-            firstName: {required},
-            middleName: {required},
-            lastName: {required},
-            login: {required},
+            firstName: {required, maxLength: maxLength(50)},
+            middleName: {required, maxLength: maxLength(50)},
+            lastName: {required, maxLength: maxLength(50)},
+            login: {required, maxLength: maxLength(10)},
             passportNumber: {required, minLength: minLength(10)},
-            password: {required}
+            password: {required, maxLength: maxLength(30)}
         },
         data: () => ({
             firstName: '',
@@ -208,11 +220,12 @@
                 this.passportNumber = ''
                 this.password = ''
             },
-            weightKeyPressed(e) {
+            loginKeyPressed(e) {
                 if(!/\w/.test(e.key)){
                     e.preventDefault()
                 }
             }
+
         },
         computed: {
             nameErrors() {
