@@ -18,33 +18,47 @@
           required
           v-model="userInfo.login"
       ></v-text-field>
+
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, more50SymbolsRule]"
           label="Имя"
+          :counter="50"
           outlined
           required
           v-model="userInfo.firstName"
+          ref="firstName"
       ></v-text-field>
+
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, more50SymbolsRule]"
           label="Отчество"
+          :counter="50"
           outlined
           required
           v-model="userInfo.middleName"
+          ref="middleName"
       ></v-text-field>
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, more50SymbolsRule]"
           label="Фамилия"
+          :counter="50"
           outlined
           required
+          ref="lastName"
           v-model="userInfo.lastName"
       ></v-text-field>
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, passportNumberRule]"
+          :counter="10"
           filled
           label="Номер паспорта"
           outlined
           required
+          ref="passportNumber"
           v-model="userInfo.passportNumber"
       ></v-text-field>
       <v-text-field
@@ -56,6 +70,17 @@
           required
           v-model="userInfo.address.address"
       ></v-text-field>
+      <v-alert
+          class="mt-6"
+          icon="mdi-alert-octagram"
+          id="userInfoChangeAlert"
+          prominent
+          text
+          type="error"
+          v-model="this.userInfoChangeAlert.show"
+      >
+        {{ this.userInfoChangeAlert.errorMessage }}
+      </v-alert>
       <v-btn @click="switchReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
       <div v-else>
         <v-btn @click="onCancelChangingUsersInfoClick"
@@ -156,6 +181,10 @@ export default {
   },
   data() {
     return {
+      requiredFieldRule: v => !!v.trim() || 'Необходимо заполнить поле',
+      more50SymbolsRule: v => v.length <= 50 || 'Поле может содержать максимум 50 символов',
+      passportNumberRule: v => ((v.length === 10 && (v.match('^[0-9]+$') != null)) || 'Номер паспорта указан некорректно'),
+
       activeColor: "#ffe082",
       accessToken: config.api.accessToken,
       mapStyle: config.api.mapStyle,
@@ -164,6 +193,7 @@ export default {
         point: [],
         name: null
       },
+
       type: "",
       weight: 0,
       description: '',
@@ -189,11 +219,15 @@ export default {
           'line-width': 10
         }
       },
-      userInfo: null,
+      userInfo: {firstName: '', middleName: '', lastName: '', passportNumber: '', address: {}},
       userInfoOrig: null,
       isReadOnly: true,
       showPasswordDialog: false,
       showAddressDialog: false,
+      userInfoChangeAlert: {
+        show: false,
+        errorMessage: null
+      },
       currentAddress: {
         point: [],
         name: null
@@ -219,11 +253,12 @@ export default {
           this.selectedAddress.point = [this.currentAddress.point[0], this.currentAddress.point[1]];
           this.userInfo = JSON.parse(JSON.stringify(response.data));
           this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
-        }).then(() =>
-        this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
-            .then(response => {
-              this.selectedAddress.name = response.data.placeName;
-            }));
+        })
+        .then(() =>
+            this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
+                .then(response => {
+                  this.selectedAddress.name = response.data.placeName;
+                }));
   },
   methods: {
     updateData() {
@@ -243,14 +278,25 @@ export default {
     },
 
     submitUserInfo() {
+      if (!this.$refs.firstName.validate() || !this.$refs.middleName.validate() || !this.$refs.lastName.validate() ||
+          !this.$refs.passportNumber.validate()) {
+        return
+      }
       this.switchReadOnly();
       this.$http
           .put(`/user`, this.userInfo)
-          .then(() => {
-            this.userInfoOrig = JSON.parse(JSON.stringify(this.userInfo));
-            this.readonly = !this.readonly
-            this.$emit('update-user', this.userInfo)
+          .then((response) => {
+            this.userInfo = response.data;
+            this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
+            this.readonly = !this.readonly;
+            this.userInfoChangeAlert.show = false;
+            this.$emit('update-user', this.userInfo);
           })
+          .catch(() => {
+                this.userInfoChangeAlert.show = true;
+                this.userInfoChangeAlert.errorMessage = "Произошла ошибка при сохранение изменений.";
+              }
+          )
     },
     submitPassword() {
       if (this.newPassword !== this.newPasswordVerification) {
@@ -260,7 +306,7 @@ export default {
         this.newPassword = null;
         return
       }
-      if (!this.newPassword) {
+      if (!this.newPassword || !this.newPassword.trim()) {
         this.passwordChangeAlert.show = true;
         this.passwordChangeAlert.errorMessage = 'Пароль не может быть пустым';
         this.newPasswordVerification = null;
@@ -277,11 +323,13 @@ export default {
       return this.isReadOnly ? "#FAFAFA" : "#FFFFFF"
     },
     switchReadOnly() {
+      this.userInfoChangeAlert.show = false;
       this.isReadOnly = !this.isReadOnly
     },
     onCancelChangingUsersInfoClick() {
       this.switchReadOnly();
-      this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig))
+      this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig));
+      this.userInfoChangeAlert.show = false;
     },
     onCancelChangingPasswordClick() {
       this.showPasswordDialog = false;
@@ -301,7 +349,10 @@ export default {
         latitude: this.selectedAddress.point[1]
       };
       this.showAddressDialog = false;
-      this.currentAddress = this.selectedAddress;
+      this.currentAddress = {
+        name: this.selectedAddress.name,
+        point: [this.selectedAddress.point[0], this.selectedAddress.point[1]]
+      };
     }
   }
 }
