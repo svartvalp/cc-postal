@@ -9,7 +9,7 @@
               :accessToken="accessToken"
               :map-style="mapStyle"
               :center="center"
-              zoom=9
+              :zoom="zoom"
               @click="onClick"
               class="map"
           >
@@ -39,7 +39,10 @@
             <label for="type">Тип посылки</label>
             <input id="type" name="type" type="text" v-model="type" class="type-input-text">
             <label for="weight">Вес посылки в граммах</label>
-            <input id="weight" name="weight" type="number" v-model="weight" class="type-input-text">
+            <input id="weight" name="weight" :value="weight"
+                   type="text"
+                   v-on:input="changeWeight"
+                   class="type-input-text">
             <label for="description">Описание посылки</label>
             <textarea id="description" name="description" rows="4" class="type-input-text"
                       v-model="description"></textarea>
@@ -76,6 +79,7 @@ export default {
       selectedPoint: null,
       type: "",
       weight: 0,
+      zoom:9,
       validationErrors: [],
       description: '',
       geoJsonSource: {
@@ -136,6 +140,10 @@ export default {
     },
   },
   methods: {
+    changeWeight(e) {
+      this.weight = e.target.value.replace(/\D/g, '').slice(0,5)
+      e.target.value = this.weight
+    },
     setAddress() {
       this.selectedPoint.center = [this.user.address.longitude, this.user.address.latitude]
       this.updateData()
@@ -184,7 +192,7 @@ export default {
       if (!this.type.trim().length) {
         this.validationErrors.push('Тип посылки не указан')
       }
-      if (this.weight === 0 || this.weight.trim() === "") {
+      if (this.weight <= 0 || this.weight.trim() === "") {
         this.validationErrors.push('Вес посылки не может быть меньше 0')
       }
       if (this.description.length > 255) {
@@ -196,6 +204,7 @@ export default {
       if (this.weight > 10000) {
         this.validationErrors.push('Вес не может быть больше 10 кг')
       }
+
     },
     onCreateDeparture() {
       console.log(this.weight)
