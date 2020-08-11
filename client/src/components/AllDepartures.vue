@@ -9,7 +9,7 @@
         <v-icon dark>mdi-plus</v-icon>
       </v-btn>
     </div>
-    <v-container id="inspire">
+    <v-container id="inspire" v-if="departures.length">
       <v-card class="mx-auto">
         <v-list two-line>
           <v-list-item-group>

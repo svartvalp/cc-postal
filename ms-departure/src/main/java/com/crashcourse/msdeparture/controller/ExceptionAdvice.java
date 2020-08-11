@@ -34,7 +34,7 @@ public class ExceptionAdvice {
                 "Field not valid: " + Objects.requireNonNull(e.getBindingResult()
                         .getFieldErrors())
                         .stream()
-                        .map(m -> m.getField() + "; ")
+                        .map(m -> m.getField() + " - " + m.getDefaultMessage() + "; ")
                         .collect(Collectors.joining())
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

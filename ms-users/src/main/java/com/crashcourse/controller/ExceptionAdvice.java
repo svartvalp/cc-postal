@@ -26,13 +26,13 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-//    @ExceptionHandler({Exception.class})
-//    public ResponseEntity<CustomErrorResponse> handleAllOtherExceptions(Exception e) {
-//        CustomErrorResponse error = new CustomErrorResponse(
-//                messageService.getMessage("internal.error.code"), e.getMessage()
-//        );
-//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<CustomErrorResponse> handleAllOtherExceptions(Exception e) {
+        CustomErrorResponse error = new CustomErrorResponse(
+                messageService.getMessage("internal.error.code"), e.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler({AlreadyExistException.class})
     public ResponseEntity<CustomErrorResponse> handleAlreadyExists(AlreadyExistException e) {
@@ -65,7 +65,7 @@ public class ExceptionAdvice {
                 "Field not valid: " + Objects.requireNonNull(e.getBindingResult()
                         .getFieldErrors())
                         .stream()
-                        .map(m -> m.getField() + "; ")
+                        .map(m -> m.getField() + " - " + m.getDefaultMessage() + "; ")
                         .collect(Collectors.joining())
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
