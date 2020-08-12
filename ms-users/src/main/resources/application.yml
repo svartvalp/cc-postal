@@ -21,3 +21,4 @@ kafka:
       request: ${APPUSERS_KAFKA_USER_LIST_REQUEST_TOPIC:user_list_request}
       response: ${APPUSERS_KAFKA_USER_LIST_RESPONSE_TOPIC:user_list_result}
   group_id: ${APPUSERS_KAFKA_GROUP_ID:ms-user}
+  max_block: ${APPUSERS_KAFKA_MAX_BLOCK:6000}

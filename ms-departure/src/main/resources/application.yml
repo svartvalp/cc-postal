@@ -19,4 +19,8 @@ kafka:
       compute: ${APPDEPARTURE_KAFKA_DEPARTURE_COMPUTE_TOPIC:departure_duration_compute}
       result: ${APPDEPARTURE_KAFKA_DEPARTURE_RESULT_TOPIC:departure_duration_result}
   group_id: ${APPDEPARTURE_KAFKA_GROUP_ID:ms_departure}
+  max_block: ${APPDEPARTURE_KAFKA_MAX_BLOCK:6000}
+schedule:
+  departure:
+    cron: ${APPDEPARTURE_SCHEDULE_INVOCATION:* */15 * * * *}
 
