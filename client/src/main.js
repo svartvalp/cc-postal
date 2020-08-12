@@ -3,9 +3,11 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import router from "./router";
 import axios from 'axios'
+import VueMask from 'v-mask'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
+Vue.use(VueMask)
 
 new Vue({
     vuetify,

@@ -9,7 +9,7 @@
         <v-icon dark>mdi-plus</v-icon>
       </v-btn>
     </div>
-    <v-container id="inspire">
+    <v-container id="inspire" v-if="departures.length">
       <v-card class="mx-auto">
         <v-list two-line>
           <v-list-item-group>
@@ -47,9 +47,6 @@
 import router from "@/router";
 
 export default {
-  props: {
-    user: Object
-  },
   data() {
     return {
       departures: [],
@@ -101,7 +98,7 @@ export default {
 .main-field {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
   width: 100%;
   height: 100%;
@@ -140,9 +137,5 @@ export default {
   flex-direction: row;
   width: 100%;
   justify-content: center;
-}
-
-.departures-title-add-departure-button {
-
 }
 </style>

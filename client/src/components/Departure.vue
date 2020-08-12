@@ -11,7 +11,7 @@
               :center="center"
               :map-style="mapStyle"
               class="map"
-              zoom="9"
+              :zoom="zoom"
           >
             <MglMarker color="blue" v-bind:coordinates="fromPoint.center"/>
             <MglMarker :coordinates="toPoint.center" color="blue"/>
@@ -29,11 +29,11 @@
               <DepartureInfoCard :paramValue="departure.arrivingPoint.address"
                                  paramName="Адрес получения"/>
               <DepartureInfoCard :paramValue="departure.departureDate" paramName="Дата отправки"/>
-              <DepartureInfoCard :paramValue="departure.type" paramName="Тип посылки"/>
-              <DepartureInfoCard :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
-              <DepartureInfoCard :paramValue="departure.description" paramName="Описание посылки"/>
-              <DepartureInfoCard :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
-              <DepartureInfoCard v-if="recipient!==''" :paramValue="recipient" paramName="Получатель"/>
+              <DepartureInfoCard v-if="departure.type" :paramValue="departure.type" paramName="Тип посылки"/>
+              <DepartureInfoCard v-if="departure.weight" :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
+              <DepartureInfoCard v-if="departure.description" :paramValue="departure.description" paramName="Описание посылки"/>
+              <DepartureInfoCard v-if="departure.arrivingDate" :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
+              <DepartureInfoCard v-if="recipient" :paramValue="recipient" paramName="Получатель"/>
               <DepartureInfoCard v-if="departure.isReceived" :paramValue="sender" paramName="Отправитель"/>
             </v-row>
           </v-container>
@@ -59,9 +59,22 @@ export default {
   },
   data() {
     return {
-      recipient: '',
-      sender: '',
-      departure: Object,
+      zoom: 9,
+      recipient: null,
+      sender: null,
+      departure: {
+        id: null,
+        userId: null,
+        departurePoint: {},
+        arrivingPoint: {},
+        type: null,
+        arrived: false,
+        weight: null,
+        description: null,
+        departureDate: null,
+        arrivingDate: null,
+        addressee: {},
+      },
       direction: Object,
       activeColor: "#ffe082",
       accessToken: config.api.accessToken,
@@ -99,7 +112,6 @@ export default {
   },
   mounted() {
     this.departure = JSON.parse(localStorage.getItem('currentDeparture'))
-    console.log(this.departure.isReceived)
     if (this.departure.isReceived) {
       this.$http.get('/user/' + this.departure.userId)
           .then(response => {

@@ -26,69 +26,68 @@
                                 <v-spacer></v-spacer>
                             </v-toolbar>
                             <v-card-text>
-                                <form>
+                                <v-form v-model="isValid">
                                     <v-text-field
-                                            :error-messages="middleNameErrors"
-                                            @blur="$v.middleName.$touch()"
-                                            @input="$v.middleName.$touch()"
-                                            color="black"
                                             label="Фамилия"
+                                            v-model="user.middleName"
+                                            maxlength="50"
                                             required
-                                            v-model="middleName"
+                                            :rules="middleNameRules"
+                                            :counter="50"
                                     ></v-text-field>
                                     <v-text-field
-                                            :error-messages="nameErrors"
-                                            @blur="$v.firstName.$touch()"
-                                            @input="$v.firstName.$touch()"
-                                            color="black"
                                             label="Имя"
+                                            v-model="user.firstName"
+                                            maxlength="50"
                                             required
-                                            v-model="firstName"
+                                            :rules="firstNameRules"
+                                            :counter="50"
                                     ></v-text-field>
                                     <v-text-field
-                                            :error-messages="lastNameErrors"
-                                            @blur="$v.lastName.$touch()"
-                                            @input="$v.lastName.$touch()"
-                                            color="black"
                                             label="Отчество"
+                                            v-model="user.lastName"
+                                            maxlength="50"
                                             required
-                                            v-model="lastName"
+                                            :rules="lastNameRules"
+                                            :counter="50"
                                     ></v-text-field>
                                     <v-text-field
-                                            :error-messages="loginErrors"
-                                            @blur="$v.login.$touch()"
-                                            @input="$v.login.$touch()"
-                                            color="black"
                                             label="Логин"
+                                            v-model="user.login"
+                                            maxlength="30"
                                             required
-                                            v-model="login"
+                                            :rules="loginRules"
+                                            :counter="30"
                                     ></v-text-field>
                                     <v-text-field
-                                            :counter="10"
-                                            :error-messages="passportNumberErrors"
-                                            @blur="$v.passportNumber.$touch()"
-                                            @input="$v.passportNumber.$touch()"
-                                            color="black"
                                             label="Серия и номер паспорта"
+                                            v-model="user.passportNumber"
+                                            maxlength="10"
+                                            v-mask="'##########'"
                                             required
-                                            v-model="passportNumber"
+                                            :rules="passportNumberRules"
+                                            :counter="10"
                                     ></v-text-field>
                                     <v-text-field
-                                            :error-messages="passwordErrors"
-                                            @blur="$v.password.$touch()"
-                                            @input="$v.password.$touch()"
-                                            color="black"
                                             label="Пароль"
-                                            required
+                                            v-model="user.password"
                                             type="password"
-                                            v-model="password"
+                                            maxlength="30"
+                                            required
+                                            :rules="passwordRules"
+                                            :counter="30"
                                     ></v-text-field>
                                     <v-card-actions class="justify-center">
-                                        <v-btn @click="submit" class="mr-4" color="amber lighten-3">Зарегистрироваться
+                                        <v-btn
+                                                @click="submit"
+                                                class="mr-4"
+                                                color="amber lighten-3"
+                                                :disabled="!isValid"
+                                        >Зарегистрироваться
                                         </v-btn>
                                         <v-btn @click="clear">Очистить</v-btn>
                                     </v-card-actions>
-                                </form>
+                                </v-form>
                             </v-card-text>
                         </v-card>
                         <v-alert
@@ -111,7 +110,7 @@
 
 <script>
     import {validationMixin} from 'vuelidate'
-    import {maxLength, minLength, required} from 'vuelidate/lib/validators'
+    import { minLength, required} from 'vuelidate/lib/validators'
 
     export default {
         mixins: [validationMixin],
@@ -121,23 +120,39 @@
             middleName: {required},
             lastName: {required},
             login: {required},
-            passportNumber: {required, minLength: minLength(10), maxLength: maxLength(10)},
-            password: {required},
-            checkbox: {
-                checked(val) {
-                    return val
-                },
-            },
+            passportNumber: {required, minLength: minLength(10)},
+            password: {required}
         },
         data: () => ({
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            login: '',
-            passportNumber: '',
-            password: '',
-            checkbox: false,
-            user: {},
+            user: {
+                firstName: null,
+                middleName: null,
+                lastName: null,
+                login: null,
+                passportNumber: null,
+                password: null
+            },
+            isValid: true,
+            firstNameRules: [
+                v => !!v || 'Имя обязательно для заполнения'
+            ],
+            middleNameRules: [
+                v => !!v || 'Фамилия обязательна для заполнения'
+            ],
+            lastNameRules: [
+                v => !!v || 'Отчество обязательно для заполнения'
+            ],
+            loginRules: [
+                v => !!v || 'Логин обязателен для заполнения'
+            ],
+            passportNumberRules: [
+                v => !!v || 'Поле обязательно для заполнения',
+                v => (v && v.length === 10) || 'Поле должно содержать 10 цифр'
+            ],
+            passwordRules: [
+                v => !!v || 'Пароль обязателен для заполнения',
+                v => /^[a-zA-Z0-9-_!;]+$/.test(v) || 'Некорректный пароль'
+            ],
             alert: {
                 show: false,
                 errorMessage: ''
@@ -145,55 +160,10 @@
         }),
         methods: {
             submit() {
-                if (this.firstName !== '') {
-                    this.user.firstName = this.firstName;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Укажите имя'
-                    return
-                }
-                if (this.middleName !== '') {
-                    this.user.middleName = this.middleName;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Укажите фамилию'
-                    return
-                }
-                if (this.lastName !== '') {
-                    this.user.lastName = this.lastName;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Укажите отчество'
-                    return
-                }
-                if (this.login !== '') {
-                    this.user.login = this.login;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Укажите логин'
-                    return
-                }
-                if (this.passportNumber !== '' && this.passportNumber.length === 10) {
-                    this.user.passportNumber = this.passportNumber;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Паспортные данные некорректны'
-                    return
-                }
-                if (this.password !== '') {
-                    this.user.password = this.password;
-                } else {
-                    this.alert.show = true
-                    this.alert.errorMessage = 'Укажите пароль'
-                    return
-                }
-
-
                 this.$http
                     .post('/register', this.user)
                     .then(() => this.$router.push('/'))
                     .catch((err) => {
-                            console.log(err)
                             this.alert.show = true
                             if (err.response.status === 400) {
                                 this.alert.errorMessage = 'Логин уже существует'
@@ -205,60 +175,23 @@
             },
             clear() {
                 this.$v.$reset()
-                this.firstName = ''
-                this.middleName = ''
-                this.lastName = ''
-                this.login = ''
-                this.passportNumber = ''
-                this.password = ''
-                this.checkbox = false
+                this.user.firstName = null
+                this.user.middleName = null
+                this.user.lastName = null
+                this.user.login = null
+                this.user.passportNumber = null
+                this.user.password = null
             },
-        },
-        computed: {
-            checkboxErrors() {
-                const error = []
-                if (!this.$v.checkbox.$dirty) return error
-                !this.$v.checkbox.checked && error.push('Вы должны быть согласны, чтобы продолжить!')
-                return error
+            loginKeyPressed(e) {
+                if (!/\w/.test(e.key)) {
+                    e.preventDefault()
+                }
             },
-            nameErrors() {
-                const error = []
-                if (!this.$v.firstName.$dirty) return error
-                !this.$v.firstName.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
-            middleNameErrors() {
-                const error = []
-                if (!this.$v.middleName.$dirty) return error
-                !this.$v.middleName.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
-            lastNameErrors() {
-                const error = []
-                if (!this.$v.lastName.$dirty) return error
-                !this.$v.lastName.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
-            loginErrors() {
-                const error = []
-                if (!this.$v.login.$dirty) return error
-                !this.$v.login.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
-            passportNumberErrors() {
-                const error = []
-                if (!this.$v.passportNumber.$dirty) return error
-                !this.$v.passportNumber.maxLength && error.push('Серия и номер паспорта должны состоять из 10 символов')
-                !this.$v.passportNumber.minLength && error.push('Серия и номер паспорта должны состоять из 10 символов')
-                !this.$v.passportNumber.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
-            passwordErrors() {
-                const error = []
-                if (!this.$v.password.$dirty) return error
-                !this.$v.password.required && error.push('Это поле обязательно для заполнения.')
-                return error
-            },
+            passwordKeyPressed(e) {
+                if (!/[a-zA-Z0-9-_!;]+/.test(e.key)) {
+                    e.preventDefault()
+                }
+            }
         }
     }
 </script>
