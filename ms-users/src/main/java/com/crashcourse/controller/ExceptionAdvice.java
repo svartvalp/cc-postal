@@ -62,7 +62,7 @@ public class ExceptionAdvice {
     public ResponseEntity<CustomErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         CustomErrorResponse error = new CustomErrorResponse(
                 messageService.getMessage("bad.request.code"),
-                Joiner.on("; ").join(e.getBindingResult().getFieldErrors()
+                Joiner.on("; ").skipNulls().join(e.getBindingResult().getFieldErrors()
                         .stream()
                         .map(m -> String.format("%s - %s", m.getField(), m.getDefaultMessage()))
                         .collect(Collectors.toList()))
