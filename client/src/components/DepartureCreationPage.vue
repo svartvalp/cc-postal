@@ -73,19 +73,19 @@ export default {
       center: config.api.init_values.map_center,
       fromPoint: {
         center: [].concat(config.api.init_values.from_point),
-        name: ""
+        name: null
       },
       toPoint: {
         center: [].concat(config.api.init_values.to_point),
-        name: ""
+        name: null
       },
       selectedPoint: null,
-      type: "",
-      weight: 0,
+      type: null,
+      weight: null,
       zoom: 9,
       validationErrors: [],
       hasServerErrors: false,
-      description: '',
+      description: null,
       geoJsonSource: {
         'type': 'geojson',
         'data': {
@@ -193,19 +193,19 @@ export default {
     },
     checkValidation() {
       this.validationErrors = []
-      if (!this.type.trim().length) {
+      if (!this.type || !this.type.trim().length) {
         this.validationErrors.push('Тип посылки не указан')
       }
-      if (this.weight <= 0 || this.weight.trim() === "") {
+      if (!this.weight || this.weight <= 0 || this.weight.trim() === "") {
         this.validationErrors.push('Вес посылки не может быть меньше 0')
       }
-      if (this.description.length > 255) {
+      if (this.description && this.description.length > 255) {
         this.validationErrors.push('Описание не может быть длиннее 255 символов')
       }
-      if (this.type.length > 20) {
+      if (!this.type || this.type.length > 20) {
         this.validationErrors.push('Название типа не может быть больше 20 символов')
       }
-      if (this.weight > 10000) {
+      if (!this.weight || this.weight > 10000) {
         this.validationErrors.push('Вес не может быть больше 10 кг')
       }
 
