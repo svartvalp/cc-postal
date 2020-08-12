@@ -20,4 +20,4 @@ kafka:
       request: ${APPNAVIGATION_KAFKA_USER_LIST_REQUEST_TOPIC:user_list_request}
       result: ${APPNAVIGATION_KAFKA_USER_LIST_RESULT_TOPIC:user_list_result}
   group_id: ${APPNAVIGATION_APPNAVIGATION_KAFKA_GROUP_ID:ms_navigaion}
-
+  max_block: ${APPNAVIGATION_KAFKA_MAX_BLOCK:6000}

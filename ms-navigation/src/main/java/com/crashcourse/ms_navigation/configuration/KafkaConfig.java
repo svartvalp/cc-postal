@@ -44,6 +44,9 @@ public class KafkaConfig {
     @Value("${kafka.topic.user-list.result}")
     private String userListOutTopic;
 
+    @Value("${kafka.max_block}")
+    private String maxBlock;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> config = new HashMap<>();
@@ -121,7 +124,7 @@ public class KafkaConfig {
     public Map<String, Object> producerConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerUrl);
-        config.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 6000);
+        config.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlock);
         return config;
     }
 

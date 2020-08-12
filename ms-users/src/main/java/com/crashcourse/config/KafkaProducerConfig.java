@@ -19,11 +19,14 @@ public class KafkaProducerConfig {
     @Value("${kafka.server}")
     private String kafkaServer;
 
+    @Value("${kafka.max_block}")
+    private String maxBlock;
+
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap();
         props.put("bootstrap.servers", kafkaServer);
-        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 6000);
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlock);
         return props;
     }
 

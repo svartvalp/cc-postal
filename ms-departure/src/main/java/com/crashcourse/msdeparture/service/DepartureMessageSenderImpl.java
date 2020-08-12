@@ -21,7 +21,7 @@ public class DepartureMessageSenderImpl implements DepartureMessageSender {
         try {
             template.send(topic, departureDto);
         } catch(Exception e) {
-            log.error("GET EXCEPTION IN KAFKA: {}, exception class: {}", e.getMessage(), e.getClass());
+            log.error("Can not send request: {}", e.getMessage());
         }
     }
 }

@@ -24,14 +24,18 @@ public class DepartureScheduler {
     @Value("${kafka.topic.departure.compute}")
     private String departureRequest;
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(cron = "${schedule.departure.cron}")
     public void setAddresseeAndDate() {
         List<Departure> departureList = departureRepository.findAllByArrivingDate(null);
         log.debug("found {} departures without arriving date", departureList.size());
-        departureList.forEach(departure -> {
-            DepartureDto departureDto = modelMapper.map(departure, DepartureDto.class);
-            departureMessageSender.sendToTopic(departureDto, departureRequest);
-        });
+        try {
+            departureList.forEach(departure -> {
+                DepartureDto departureDto = modelMapper.map(departure, DepartureDto.class);
+                departureMessageSender.sendToTopic(departureDto, departureRequest);
+            });
+        } catch(Exception e) {
+            log.error("Can not send schedule request: {}", e.getMessage());
+        }
 
     }
 }
