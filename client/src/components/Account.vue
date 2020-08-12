@@ -18,33 +18,48 @@
           required
           v-model="userInfo.login"
       ></v-text-field>
+
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, less50SymbolsRule]"
           label="Имя"
+          :counter="50"
           outlined
           required
           v-model="userInfo.firstName"
+          ref="firstName"
       ></v-text-field>
+
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, less50SymbolsRule]"
           label="Отчество"
+          :counter="50"
           outlined
           required
           v-model="userInfo.middleName"
+          ref="middleName"
       ></v-text-field>
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, less50SymbolsRule]"
           label="Фамилия"
+          :counter="50"
           outlined
           required
+          ref="lastName"
           v-model="userInfo.lastName"
       ></v-text-field>
       <v-text-field
           :background-color="fieldBackgroundColor()"
+          :rules="[requiredFieldRule, passportNumberRule]"
+          :counter="10"
           filled
-          label="Номер паспорта"
+          label="Серия и номер паспорта"
           outlined
           required
+          ref="passportNumber"
+          v-mask="'##########'"
           v-model="userInfo.passportNumber"
       ></v-text-field>
       <v-text-field
@@ -56,6 +71,17 @@
           required
           v-model="userInfo.address.address"
       ></v-text-field>
+      <v-alert
+          class="mt-6"
+          icon="mdi-alert-octagram"
+          id="userInfoChangeAlert"
+          prominent
+          text
+          type="error"
+          v-model="this.userInfoChangeAlert.show"
+      >
+        {{ this.userInfoChangeAlert.errorMessage }}
+      </v-alert>
       <v-btn @click="switchReadOnly" style="margin: 10px" v-if="isReadOnly">Изменить информацию</v-btn>
       <div v-else>
         <v-btn @click="onCancelChangingUsersInfoClick"
@@ -83,8 +109,18 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field label="Новый пароль" required type="password" v-model="newPassword"></v-text-field>
-            <v-text-field label="Повторите" required type="password" v-model="newPasswordVerification"></v-text-field>
+            <v-text-field ref="newPassword" counter="30" :rules="[requiredFieldRule,passwordRule, less30SymbolsRule]"
+                          label="Новый пароль" required :type="showPassword ? 'text' : 'password'"
+                          v-model="newPassword" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                          @click:append="showPassword = !showPassword"
+            ></v-text-field>
+            <v-text-field ref="newPasswordValidation" counter="30"
+                          :rules="[requiredFieldRule,passwordRule, less30SymbolsRule]"
+                          label="Повторите" required :type="showPasswordVerification ? 'text' : 'password'"
+                          v-model="newPasswordVerification"
+                          :append-icon="showPasswordVerification ? 'mdi-eye' : 'mdi-eye-off'"
+                          @click:append="showPasswordVerification = !showPasswordVerification"></v-text-field>
+            <p class="text-center">Пароль может содержать только латинские буквы, цифры, '-', '_'.</p>
             <v-alert
                 class="mt-6"
                 icon="mdi-alert-octagram"
@@ -156,6 +192,7 @@ export default {
   },
   data() {
     return {
+
       activeColor: "#ffe082",
       accessToken: config.api.accessToken,
       mapStyle: config.api.mapStyle,
@@ -164,6 +201,7 @@ export default {
         point: [],
         name: null
       },
+
       type: "",
       weight: 0,
       description: '',
@@ -189,43 +227,55 @@ export default {
           'line-width': 10
         }
       },
-      userInfo: null,
+      userInfo: {firstName: '', middleName: '', lastName: '', passportNumber: '', address: {}},
       userInfoOrig: null,
       isReadOnly: true,
       showPasswordDialog: false,
       showAddressDialog: false,
+      userInfoChangeAlert: {
+        show: false,
+        errorMessage: null
+      },
       currentAddress: {
         point: [],
         name: null
       },
-      newPassword: null,
-      newPasswordVerification: null,
+      newPassword: '',
+      newPasswordVerification: '',
       passwordChangeAlert: {
         show: false,
         errorMessage: null
-      }
+      },
+      showPassword: false,
+      showPasswordVerification: false,
+
+      requiredFieldRule: v => (v !== null && !!v.trim()) || 'Необходимо заполнить поле',
+      less50SymbolsRule: v => v.length <= 50 || 'Поле может содержать максимум 50 символов',
+      passportNumberRule: v => ((v.length === 10 && (v.match('^[0-9]+$') != null)) || 'Номер паспорта указан некорректно'),
+      passwordRule: v => ((v.match('^[a-zA-Z0-9-_!;]+$') != null) || 'Пароль содержит недопустимые символы'),
+      less30SymbolsRule: v => v.length <= 30 || 'Поле может содержать максимум 30 символов',
     }
   },
   mounted() {
-    this.$http.get('/user')
+    this.userInfo = JSON.parse(localStorage.getItem('user'))
+    if (!this.userInfo.address) {
+      this.userInfo.address = {};
+      this.currentAddress.point = this.center;
+    } else {
+      this.currentAddress.point = [this.userInfo.address.longitude, this.userInfo.address.latitude];
+      this.currentAddress.name = this.userInfo.address.address;
+    }
+    this.selectedAddress.point = [this.currentAddress.point[0], this.currentAddress.point[1]];
+    this.userInfoOrig = JSON.parse(JSON.stringify(this.userInfo));
+    this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
         .then(response => {
-          if (!response.data.address) {
-            response.data.address = {};
-            this.currentAddress.point = this.center;
-          } else {
-            this.currentAddress.point = [response.data.address.longitude, response.data.address.latitude];
-            this.currentAddress.name = response.data.address.address;
-          }
-          this.selectedAddress.point = [this.currentAddress.point[0], this.currentAddress.point[1]];
-          this.userInfo = JSON.parse(JSON.stringify(response.data));
-          this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
-        }).then(() =>
-        this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
-            .then(response => {
-              this.selectedAddress.name = response.data.placeName;
-            }));
+          this.selectedAddress.name = response.data.placeName;
+        })
   },
   methods: {
+    checkPasswordField() {
+      this.newPassword = this.newPassword.match("^[a-zA-Z0-9-_!;]+$")[0]
+    },
     updateData() {
       return this.loadPoint()
     },
@@ -243,33 +293,49 @@ export default {
     },
 
     submitUserInfo() {
+      if (!this.$refs.firstName.validate() || !this.$refs.middleName.validate() || !this.$refs.lastName.validate() ||
+          !this.$refs.passportNumber.validate()) {
+        return
+      }
       this.switchReadOnly();
       this.$http
           .put(`/user`, this.userInfo)
-          .then(() => {
-            this.userInfoOrig = JSON.parse(JSON.stringify(this.userInfo));
-            this.readonly = !this.readonly
-            this.$emit('update-user', this.userInfo)
+          .then((response) => {
+            this.$emit('update-user', response.data);
+            if (!response.data.address) {
+              response.data.address = {}
+            }
+            this.userInfo = JSON.parse(JSON.stringify(response.data));
+            this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
+            this.readonly = !this.readonly;
+            this.userInfoChangeAlert.show = false;
           })
+          .catch(() => {
+                this.userInfoChangeAlert.show = true;
+                this.userInfoChangeAlert.errorMessage = "Произошла ошибка при сохранение изменений.";
+              }
+          )
     },
     submitPassword() {
+      if (!this.$refs.newPassword.validate() || !this.$refs.newPasswordValidation.validate()) {
+        return
+      }
       if (this.newPassword !== this.newPasswordVerification) {
         this.passwordChangeAlert.show = true;
         this.passwordChangeAlert.errorMessage = 'Пароли должны совпадать';
-        this.newPasswordVerification = null;
-        this.newPassword = null;
         return
       }
-      if (!this.newPassword) {
+      if (!this.newPassword || !this.newPassword.trim()) {
         this.passwordChangeAlert.show = true;
         this.passwordChangeAlert.errorMessage = 'Пароль не может быть пустым';
-        this.newPasswordVerification = null;
-        this.newPassword = null;
         return
       }
+      this.passwordChangeAlert.show = false;
       this.userInfo.password = this.newPassword;
       this.$http
           .put(`/user`, this.userInfo)
+      this.newPassword = '';
+      this.newPasswordVerification = '';
       this.showPasswordDialog = false;
       this.userInfo = this.userInfoOrig;
     },
@@ -277,11 +343,13 @@ export default {
       return this.isReadOnly ? "#FAFAFA" : "#FFFFFF"
     },
     switchReadOnly() {
+      this.userInfoChangeAlert.show = false;
       this.isReadOnly = !this.isReadOnly
     },
     onCancelChangingUsersInfoClick() {
       this.switchReadOnly();
-      this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig))
+      this.userInfo = JSON.parse(JSON.stringify(this.userInfoOrig));
+      this.userInfoChangeAlert.show = false;
     },
     onCancelChangingPasswordClick() {
       this.showPasswordDialog = false;
@@ -301,7 +369,10 @@ export default {
         latitude: this.selectedAddress.point[1]
       };
       this.showAddressDialog = false;
-      this.currentAddress = this.selectedAddress;
+      this.currentAddress = {
+        name: this.selectedAddress.name,
+        point: [this.selectedAddress.point[0], this.selectedAddress.point[1]]
+      };
     }
   }
 }
