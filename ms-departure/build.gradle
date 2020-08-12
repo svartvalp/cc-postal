@@ -25,6 +25,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.1.5.Final'
+    compile group: 'com.google.guava', name: 'guava', version: 'r05'
     compile group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
     compile 'org.springframework.kafka:spring-kafka'
 

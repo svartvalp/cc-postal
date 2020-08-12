@@ -2,6 +2,7 @@ package com.crashcourse.controller;
 
 import com.crashcourse.exception.*;
 import com.crashcourse.service.MessageService;
+import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -35,7 +35,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({AlreadyExistException.class})
-    public ResponseEntity<CustomErrorResponse> handleAlreadyExists(AlreadyExistException e) {
+    public ResponseEntity<CustomErrorResponse> handleAlreadyExistsException(AlreadyExistException e) {
         CustomErrorResponse error = new CustomErrorResponse(
                 messageService.getMessage("already.exists.code"), e.getMessage()
         );
@@ -43,7 +43,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({BadConvertException.class})
-    public ResponseEntity<CustomErrorResponse> handleBadConvert(BadConvertException e) {
+    public ResponseEntity<CustomErrorResponse> handleBadConvertException(BadConvertException e) {
         CustomErrorResponse error = new CustomErrorResponse(
                 messageService.getMessage("bad.convert.code"), e.getMessage()
         );
@@ -51,7 +51,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({BadRequestException.class})
-    public ResponseEntity<CustomErrorResponse> handleBadRequest(BadRequestException e) {
+    public ResponseEntity<CustomErrorResponse> handleBadRequestException(BadRequestException e) {
         CustomErrorResponse error = new CustomErrorResponse(
                 messageService.getMessage("bad.request.code"), e.getMessage()
         );
@@ -59,14 +59,13 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<CustomErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+    public ResponseEntity<CustomErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         CustomErrorResponse error = new CustomErrorResponse(
                 messageService.getMessage("bad.request.code"),
-                "Field not valid: " + Objects.requireNonNull(e.getBindingResult()
-                        .getFieldErrors())
+                Joiner.on("; ").join(e.getBindingResult().getFieldErrors()
                         .stream()
-                        .map(m -> m.getField() + " - " + m.getDefaultMessage() + "; ")
-                        .collect(Collectors.joining())
+                        .map(m -> String.format("%s - %s", m.getField(), m.getDefaultMessage()))
+                        .collect(Collectors.toList()))
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

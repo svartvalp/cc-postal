@@ -29,11 +29,11 @@
               <DepartureInfoCard :paramValue="departure.arrivingPoint.address"
                                  paramName="Адрес получения"/>
               <DepartureInfoCard :paramValue="departure.departureDate" paramName="Дата отправки"/>
-              <DepartureInfoCard :paramValue="departure.type" paramName="Тип посылки"/>
-              <DepartureInfoCard :paramValue="departure.weight.toString()" paramName="Вес посылки (в граммах)"/>
-              <DepartureInfoCard :paramValue="departure.description" paramName="Описание посылки"/>
-              <DepartureInfoCard :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
-              <DepartureInfoCard v-if="recipient!==''" :paramValue="recipient" paramName="Получатель"/>
+              <DepartureInfoCard v-if="departure.type" :paramValue="departure.type" paramName="Тип посылки"/>
+              <DepartureInfoCard v-if="departure.weight" :paramValue="departure.weight" paramName="Вес посылки (в граммах)"/>
+              <DepartureInfoCard v-if="departure.description" :paramValue="departure.description" paramName="Описание посылки"/>
+              <DepartureInfoCard v-if="departure.arrivingDate" :paramValue="departure.arrivingDate" paramName="Дата прибытия посылки"/>
+              <DepartureInfoCard v-if="recipient" :paramValue="recipient" paramName="Получатель"/>
               <DepartureInfoCard v-if="departure.isReceived" :paramValue="sender" paramName="Отправитель"/>
             </v-row>
           </v-container>
@@ -60,17 +60,17 @@ export default {
   data() {
     return {
       zoom: 9,
-      recipient: '',
-      sender: '',
+      recipient: null,
+      sender: null,
       departure: {
-        id: '',
-        userId: '',
+        id: null,
+        userId: null,
         departurePoint: {},
         arrivingPoint: {},
-        type: '',
+        type: null,
         arrived: false,
-        weight: 0,
-        description: '',
+        weight: null,
+        description: null,
         departureDate: null,
         arrivingDate: null,
         addressee: {},
