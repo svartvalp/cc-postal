@@ -82,6 +82,7 @@ public class KafkaConfig {
     public Map<String, Object> producerConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerUrl);
+        config.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 6000);
         return config;
     }
 

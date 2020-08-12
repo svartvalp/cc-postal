@@ -1,6 +1,7 @@
 package com.crashcourse.config;
 
 import com.crashcourse.dto.UserListDto;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ public class KafkaProducerConfig {
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap();
         props.put("bootstrap.servers", kafkaServer);
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 6000);
         return props;
     }
 
