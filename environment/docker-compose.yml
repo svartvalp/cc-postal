@@ -1,79 +1,79 @@
 version: '3.7'
 services:
-#  frontend:
-#    image: crashcourse-frontend-app
-#    build:
-#      context: ../client
-#      dockerfile: Dockerfile
-#    environment:
-#      HOST: crashcourse-ms-gateway
-#    ports:
-#      - '8085:80'
-#    depends_on:
-#      - crashcourse-ms-gateway
-#  crashcourse-ms-navigation:
-#    image: crashcourse-ms-navigation
-#    build:
-#      context: ..
-#      dockerfile: ./ms-navigation/Dockerfile
-#    environment:
-#      APPNAVIGATION_API_ACCESS_TOKEN: pk.eyJ1Ijoic3ZhcnR2YWxwIiwiYSI6ImNrZDhqNm1leTB1bmoycXNjOGpvcmpubDcifQ.8a3iefrMWmydU-1bk8gLUQ
-#      APPNAVIGATION_DB_HOST: mongo
-#      APPNAVIGATION_KAFKA_BOOTSTRAP_SERVER: kafka:9093
-#    ports:
-#      - '8082:8082'
-#    depends_on:
-#      - zookeeper
-#      - kafka
-#      - mongo
-#    restart: always
-#  crashcourse-ms-users:
-#    image: crashcourse-ms-users
-#    build:
-#      context: ..
-#      dockerfile: ./ms-users/Dockerfile
-#    environment:
-#      APPUSERS_DB_HOST: postgres
-#      APPUSERS_LOGGING_REQUESTS: "true"
-#      APPUSERS_KAFKA_BOOTSTRAP_SERVER: kafka:9093
-#    ports:
-#      - '8081:8081'
-#    depends_on:
-#      - postgres
-#      - zookeeper
-#      - kafka
-#    restart: always
-#  crashcourse-ms-departure:
-#    image: crashcourse-ms-departure
-#    build:
-#      context: ..
-#      dockerfile: ./ms-departure/Dockerfile
-#    environment:
-#      APPDEPARTURE_DB_HOST: postgres
-#      APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER: kafka:9093
-#    ports:
-#      - '8083:8083'
-#    depends_on:
-#      - postgres
-#      - zookeeper
-#      - kafka
-#    restart: always
-#  crashcourse-ms-gateway:
-#    image: crashcourse-ms-gateway
-#    build:
-#      context: ..
-#      dockerfile: ./ms-gateway/Dockerfile
-#    ports:
-#      - '8080:8080'
-#    environment:
-#      APPGATEWAY_USERS_SERVICE_URL: http://crashcourse-ms-users:8081/
-#      APPGATEWAY_NAVIGATION_SERVICE_URL: http://crashcourse-ms-navigation:8082/
-#      APPGATEWAY_DEPARTURE_SERVICE_URL: http://crashcourse-ms-departure:8083/
-#    depends_on:
-#      - crashcourse-ms-departure
-#      - crashcourse-ms-navigation
-#      - crashcourse-ms-users
-#    restart: always
+  frontend:
+    image: crashcourse-frontend-app
+    build:
+      context: ../client
+      dockerfile: Dockerfile
+    environment:
+      HOST: crashcourse-ms-gateway
+    ports:
+      - '8085:80'
+    depends_on:
+      - crashcourse-ms-gateway
+  crashcourse-ms-navigation:
+    image: crashcourse-ms-navigation
+    build:
+      context: ..
+      dockerfile: ./ms-navigation/Dockerfile
+    environment:
+      APPNAVIGATION_API_ACCESS_TOKEN: pk.eyJ1Ijoic3ZhcnR2YWxwIiwiYSI6ImNrZDhqNm1leTB1bmoycXNjOGpvcmpubDcifQ.8a3iefrMWmydU-1bk8gLUQ
+      APPNAVIGATION_DB_HOST: mongo
+      APPNAVIGATION_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+      - '8082:8082'
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongo
+    restart: always
+  crashcourse-ms-users:
+    image: crashcourse-ms-users
+    build:
+      context: ..
+      dockerfile: ./ms-users/Dockerfile
+    environment:
+      APPUSERS_DB_HOST: postgres
+      APPUSERS_LOGGING_REQUESTS: "true"
+      APPUSERS_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+      - '8081:8081'
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+    restart: always
+  crashcourse-ms-departure:
+    image: crashcourse-ms-departure
+    build:
+      context: ..
+      dockerfile: ./ms-departure/Dockerfile
+    environment:
+      APPDEPARTURE_DB_HOST: postgres
+      APPDEPARTURE_KAFKA_BOOTSTRAP_SERVER: kafka:9093
+    ports:
+      - '8083:8083'
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+    restart: always
+  crashcourse-ms-gateway:
+    image: crashcourse-ms-gateway
+    build:
+      context: ..
+      dockerfile: ./ms-gateway/Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      APPGATEWAY_USERS_SERVICE_URL: http://crashcourse-ms-users:8081/
+      APPGATEWAY_NAVIGATION_SERVICE_URL: http://crashcourse-ms-navigation:8082/
+      APPGATEWAY_DEPARTURE_SERVICE_URL: http://crashcourse-ms-departure:8083/
+    depends_on:
+      - crashcourse-ms-departure
+      - crashcourse-ms-navigation
+      - crashcourse-ms-users
+    restart: always
   postgres:
     image: postgres:11
     ports:
