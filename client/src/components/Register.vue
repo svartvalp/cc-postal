@@ -11,7 +11,7 @@
                 >
                     <v-col
                             cols="12"
-                            md="4"
+                            md="6"
                             sm="8"
                     >
 
@@ -78,14 +78,15 @@
                                             :counter="30"
                                     ></v-text-field>
                                     <v-card-actions class="justify-center">
+                                        <v-btn @click="loginPage">Войти</v-btn>
                                         <v-btn
                                                 @click="submit"
-                                                class="mr-4"
                                                 color="amber lighten-3"
+                                                class="mx-4"
                                                 :disabled="!isValid"
                                         >Зарегистрироваться
                                         </v-btn>
-                                        <v-btn @click="clear">Очистить</v-btn>
+                                        <v-btn @click="clear" class="ml-1">Очистить</v-btn>
                                     </v-card-actions>
                                 </v-form>
                             </v-card-text>
@@ -110,7 +111,7 @@
 
 <script>
     import {validationMixin} from 'vuelidate'
-    import { minLength, required} from 'vuelidate/lib/validators'
+    import {minLength, required} from 'vuelidate/lib/validators'
 
     export default {
         mixins: [validationMixin],
@@ -151,11 +152,11 @@
             ],
             passwordRules: [
                 v => !!v || 'Пароль обязателен для заполнения',
-                v => /^[a-zA-Z0-9-_!;]+$/.test(v) || 'Некорректный пароль'
+                v => /^[a-zA-Z0-9-_!;]+$/.test(v) || "Поддерживаются только латинские буквы, цифры и символы '-', '_', '!', ';'"
             ],
             alert: {
                 show: false,
-                errorMessage: ''
+                errorMessage: null
             }
         }),
         methods: {
@@ -182,15 +183,8 @@
                 this.user.passportNumber = null
                 this.user.password = null
             },
-            loginKeyPressed(e) {
-                if (!/\w/.test(e.key)) {
-                    e.preventDefault()
-                }
-            },
-            passwordKeyPressed(e) {
-                if (!/[a-zA-Z0-9-_!;]+/.test(e.key)) {
-                    e.preventDefault()
-                }
+            loginPage() {
+                this.$router.push('/login')
             }
         }
     }
