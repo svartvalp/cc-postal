@@ -271,26 +271,6 @@ export default {
         .then(response => {
           this.selectedAddress.name = response.data.placeName;
         })
-    /*
-    this.$http.get('/user')
-        .then(response => {
-          if (!response.data.address) {
-            response.data.address = {};
-            this.currentAddress.point = this.center;
-          } else {
-            this.currentAddress.point = [response.data.address.longitude, response.data.address.latitude];
-            this.currentAddress.name = response.data.address.address;
-          }
-          this.selectedAddress.point = [this.currentAddress.point[0], this.currentAddress.point[1]];
-          this.userInfo = JSON.parse(JSON.stringify(response.data));
-          this.userInfoOrig = JSON.parse(JSON.stringify(response.data));
-        })
-        .then(() =>
-            this.$http.get(`/geocoding/point?longitude=${this.selectedAddress.point[0]}&latitude=${this.selectedAddress.point[1]}`)
-                .then(response => {
-                  this.selectedAddress.name = response.data.placeName;
-                }));
-    */
   },
   methods: {
     checkPasswordField() {
