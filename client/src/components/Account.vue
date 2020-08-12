@@ -192,8 +192,6 @@ export default {
   },
   data() {
     return {
-
-      activeColor: "#ffe082",
       accessToken: config.api.accessToken,
       mapStyle: config.api.mapStyle,
       center: config.api.init_values.map_center,
@@ -202,9 +200,6 @@ export default {
         name: null
       },
 
-      type: "",
-      weight: 0,
-      description: '',
       geoJsonSource: {
         'type': 'geojson',
         'data': {
@@ -227,7 +222,7 @@ export default {
           'line-width': 10
         }
       },
-      userInfo: {firstName: '', middleName: '', lastName: '', passportNumber: '', address: {}},
+      userInfo: {firstName: null, middleName: null, lastName: null, passportNumber: null, address: {}},
       userInfoOrig: null,
       isReadOnly: true,
       showPasswordDialog: false,
@@ -240,8 +235,8 @@ export default {
         point: [],
         name: null
       },
-      newPassword: '',
-      newPasswordVerification: '',
+      newPassword: null,
+      newPasswordVerification: null,
       passwordChangeAlert: {
         show: false,
         errorMessage: null
@@ -250,10 +245,10 @@ export default {
       showPasswordVerification: false,
 
       requiredFieldRule: v => (v !== null && !!v.trim()) || 'Необходимо заполнить поле',
-      less50SymbolsRule: v => v.length <= 50 || 'Поле может содержать максимум 50 символов',
-      passportNumberRule: v => ((v.length === 10 && (v.match('^[0-9]+$') != null)) || 'Номер паспорта указан некорректно'),
-      passwordRule: v => ((v.match('^[a-zA-Z0-9-_!;]+$') != null) || 'Пароль содержит недопустимые символы'),
-      less30SymbolsRule: v => v.length <= 30 || 'Поле может содержать максимум 30 символов',
+      less50SymbolsRule: v => (v !== null && v.length <= 50) || 'Поле может содержать максимум 50 символов',
+      passportNumberRule: v => ((v !== null && v.length === 10 && (v.match('^[0-9]+$') != null)) || 'Номер паспорта указан некорректно'),
+      passwordRule: v => ((v !== null && (v.match('^[a-zA-Z0-9-_!;]+$') != null)) || 'Пароль содержит недопустимые символы'),
+      less30SymbolsRule: v => (v !== null && v.length <= 30) || 'Поле может содержать максимум 30 символов',
     }
   },
   mounted() {
