@@ -2,6 +2,7 @@
   <div class="departure-creation-container">
     <div class="departure-creation-wrap">
       <div class="departures-title">Отправка посылки</div>
+      <div v-if="this.hasServerErrors" class="warning-message">Произошла внутренняя ошибка. Попробуйте снова через некоторое время</div>
       <div v-if="this.hasRoutes" class="warning-message">Невозможно доставить посылку для данных точек</div>
       <div class="map-container">
         <div class="map-wrapper">
@@ -81,6 +82,7 @@ export default {
       weight: 0,
       zoom:9,
       validationErrors: [],
+      hasServerErrors : false,
       description: '',
       geoJsonSource: {
         'type': 'geojson',
@@ -207,6 +209,7 @@ export default {
 
     },
     onCreateDeparture() {
+      this.hasServerErrors = false
       console.log(this.weight)
       this.checkValidation()
       if (this.validationErrors.length)
@@ -231,7 +234,9 @@ export default {
       }
       console.log(body)
       this.$http.post('/departure', body).then(() => {
-        this.$router.push('/')
+        this.$router.push('/departures')
+      }).catch(() => {
+        this.hasServerErrors = true
       })
     },
     async resetValues() {
