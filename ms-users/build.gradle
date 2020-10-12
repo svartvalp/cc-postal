@@ -24,5 +24,6 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.2.RELEASE'
     compile group: 'com.google.guava', name: 'guava', version: 'r05'
     compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.5.4.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compile project(":ms-db")
 }
